@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="bumblebee">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hebo AI - Evaluation</title>
+    <link href="../dist/style.css" rel="stylesheet">
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+</head>
+<body class="min-h-screen bg-base-100" x-data="{ 
+    sidebarOpen: true,
+    showVersionModal: false,
+    showTestModal: false,
+    currentTest: null
+}">
+    <div class="drawer lg:drawer-open">
+        <!-- Sidebar (same as other pages) -->
+        <input id="sidebar" type="checkbox" class="drawer-toggle" x-model="sidebarOpen" />
+        <div class="drawer-side">
+            <label for="sidebar" class="drawer-overlay"></label>
+            <aside class="bg-base-200 min-h-screen transition-all duration-300 flex flex-col" 
+                  :class="{ 'collapsed': !sidebarOpen }">
+                
+                <!-- Logo section -->
+                <div class="h-16 flex items-center justify-between px-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" 
+                         class="h-4 w-4" 
+                         viewBox="0 0 24 24" 
+                         fill="none" 
+                         stroke="currentColor" 
+                         stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 3v1.5M4.5 8.25H3m18 0h-1.5M4.5 12H3m18 0h-1.5m-15 3.75H3m18 0h-1.5M8.25 19.5V21M12 3v1.5m0 15V21m3.75-18v1.5m0 15V21m-9-1.5h10.5a2.25 2.25 0 002.25-2.25V6.75a2.25 2.25 0 00-2.25-2.25H6.75A2.25 2.25 0 004.5 6.75v10.5a2.25 2.25 0 002.25 2.25zm.75-12h9v9h-9v-9z" />
+                    </svg>
+                    <button class="btn btn-sm btn-ghost" @click="sidebarOpen = !sidebarOpen">
+                        <svg xmlns="http://www.w3.org/2000/svg" 
+                             class="h-4 w-4" 
+                             :class="{ 'rotate-180': !sidebarOpen }"
+                             viewBox="0 0 24 24" 
+                             fill="none" 
+                             stroke="currentColor" 
+                             stroke-width="2">
+                            <path stroke-linecap="round" 
+                                  stroke-linejoin="round" 
+                                  d="M18.75 19.5l-7.5-7.5 7.5-7.5m-6 15L5.25 12l7.5-7.5" />
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Menu section -->
+                <ul class="menu menu-vertical px-2 py-2 gap-1">
+                    <li>
+                        <a href="home.html" class="flex items-center h-8 transition-all duration-300 hover:bg-base-300 mx-2"
+                           :class="{'justify-center rounded-lg': !sidebarOpen, 'rounded-xl': sidebarOpen}">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
+                            </svg>
+                            <span class="ml-3 transition-all duration-300" 
+                                  :class="{'opacity-0 w-0': !sidebarOpen, 'opacity-100': sidebarOpen}">Home</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="agent.html" class="flex items-center h-8 transition-all duration-300 hover:bg-base-300 mx-2"
+                           :class="{'justify-center rounded-lg': !sidebarOpen, 'rounded-xl': sidebarOpen}">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 3v1.5M4.5 8.25H3m18 0h-1.5M4.5 12H3m18 0h-1.5m-15 3.75H3m18 0h-1.5M8.25 19.5V21M12 3v1.5m0 15V21m3.75-18v1.5m0 15V21m-9-1.5h10.5a2.25 2.25 0 002.25-2.25V6.75a2.25 2.25 0 00-2.25-2.25H6.75A2.25 2.25 0 004.5 6.75v10.5a2.25 2.25 0 002.25 2.25zm.75-12h9v9h-9v-9z" />
+                            </svg>
+                            <span class="ml-3 transition-all duration-300" 
+                                  :class="{'opacity-0 w-0': !sidebarOpen, 'opacity-100': sidebarOpen}">Agent</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="knowledge-base.html" class="flex items-center h-8 transition-all duration-300 hover:bg-base-300 mx-2"
+                           :class="{'justify-center rounded-lg': !sidebarOpen, 'rounded-xl': sidebarOpen}">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
+                            </svg>
+                            <span class="ml-3 transition-all duration-300" 
+                                  :class="{'opacity-0 w-0': !sidebarOpen, 'opacity-100': sidebarOpen}">Knowledge Base</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="evaluation.html" class="flex items-center h-8 transition-all duration-300 hover:bg-base-300 bg-primary text-primary-content mx-2"
+                           :class="{'justify-center rounded-lg': !sidebarOpen, 'rounded-xl': sidebarOpen}">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0112 15a9.065 9.065 0 00-6.23-.693L5 14.5m14.8.8l1.402 1.402c1.232 1.232.65 3.318-1.067 3.611A48.309 48.309 0 0112 21c-2.773 0-5.491-.235-8.135-.687-1.718-.293-2.3-2.379-1.067-3.61L5 14.5" />
+                            </svg>
+                            <span class="ml-3 transition-all duration-300" 
+                                  :class="{'opacity-0 w-0': !sidebarOpen, 'opacity-100': sidebarOpen}">Evaluation</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="conversations.html" class="flex items-center h-8 transition-all duration-300 hover:bg-base-300 mx-2"
+                           :class="{'justify-center rounded-lg': !sidebarOpen, 'rounded-xl': sidebarOpen}">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 01.865-.501 48.172 48.172 0 003.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z" />
+                            </svg>
+                            <span class="ml-3 transition-all duration-300" 
+                                  :class="{'opacity-0 w-0': !sidebarOpen, 'opacity-100': sidebarOpen}">Conversations</span>
+                        </a>
+                    </li>
+                </ul>
+
+                <!-- Spacer to push settings to bottom -->
+                <div class="flex-1"></div>
+
+                <!-- Settings and user at bottom -->
+                <ul class="menu menu-vertical px-2 py-2 gap-1 border-t border-base-300">
+                    <li>
+                        <a href="settings.html" class="flex items-center h-8 transition-all duration-300 hover:bg-base-300 mx-2"
+                           :class="{'justify-center rounded-lg': !sidebarOpen, 'rounded-xl': sidebarOpen}">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.24-.438.613-.431.992a6.759 6.759 0 010 .255c-.007.378.138.75.43.99l1.005.828c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 010-.255c.007-.378-.138-.75-.43-.99l-1.004-.828a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            </svg>
+                            <span class="ml-3 transition-all duration-300" 
+                                  :class="{'opacity-0 w-0': !sidebarOpen, 'opacity-100': sidebarOpen}">Organization Settings</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="flex items-center h-8 transition-all duration-300 hover:bg-base-300 mx-2 cursor-pointer"
+                           :class="{'justify-center rounded-lg': !sidebarOpen, 'rounded-xl': sidebarOpen}"
+                           onclick="document.getElementById('user-dropdown').classList.toggle('hidden')">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z" />
+                            </svg>
+                            <span class="ml-3 transition-all duration-300" 
+                                  :class="{'opacity-0 w-0': !sidebarOpen, 'opacity-100': sidebarOpen}">Heinrich</span>
+                        </a>
+                        <ul id="user-dropdown" class="menu dropdown-content hidden ml-4 mt-1 p-2 shadow bg-base-100 rounded-box w-52">
+                            <li><a>Profile</a></li>
+                            <li><a href="../index.html">Logout</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </aside>
+        </div>
+
+        <!-- Main content -->
+        <div class="drawer-content flex flex-col">
+            <!-- Top navigation -->
+            <div class="h-12 flex items-center px-6 bg-base-100 border-b">
+                <div class="text-sm breadcrumbs">
+                    <ul>
+                        <li><a class="text-base-content/70">3cat</a></li>
+                        <li><a class="text-base-content/70">Gato</a></li>
+                        <li class="text-base-content/70">Evaluation</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Main content -->
+            <main class="flex h-[calc(100vh-3rem)]">
+                <!-- Left section - Test Cases -->
+                <div class="w-2/5 p-6 overflow-y-auto border-r">
+                    <!-- Search and Add button row -->
+                    <div class="space-y-4 mb-4">
+                        <!-- Search bar with magnifier icon -->
+                        <div class="relative">
+                            <input type="text" class="input input-bordered w-full pl-10" placeholder="Search test cases..." />
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-base-content/50" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+                                </svg>
+                            </div>
+                        </div>
+
+                        <!-- Add test case button -->
+                        <div class="flex justify-start gap-2">
+                            <button type="button" class="btn btn-outline btn-primary btn-sm" @click="showExampleModal = true">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                                </svg>
+                                Add Test Case
+                            </button>
+                            <label class="btn btn-outline btn-sm">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
+                                </svg>
+                                Upload From File
+                                <input type="file" class="hidden" accept=".json,.yaml,.yml" />
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Test Cases list -->
+                    <div class="space-y-2">
+                        <template x-for="(testCase, index) in [
+                            { 
+                                title: 'Product Inquiry', 
+                                status: 'passed',
+                                messages: [
+                                    {role: 'USER', content: 'What are the features of your premium plan?'},
+                                    {role: 'AGENT', content: 'Our premium plan includes advanced analytics, priority support, and unlimited storage.'}
+                                ]
+                            },
+                            { 
+                                title: 'Support Request', 
+                                status: 'failed',
+                                messages: [
+                                    {role: 'USER', content: 'I cannot access my account'},
+                                    {role: 'AGENT', content: 'I\'ll help you regain access. Could you please verify your email address?'}
+                                ]
+                            },
+                            { 
+                                title: 'Pricing Question', 
+                                status: 'skip',
+                                messages: [
+                                    {role: 'USER', content: 'How much does the basic plan cost?'},
+                                    {role: 'AGENT', content: 'Our basic plan starts at $9.99 per month when billed annually.'}
+                                ]
+                            }
+                        ]" :key="index">
+                            <div class="card bg-base-200 shadow-sm border border-base-300">
+                                <div class="card-body p-3">
+                                    <div class="flex justify-between items-center">
+                                        <div class="flex items-center gap-2">
+                                            <span class="font-medium" x-text="testCase.title"></span>
+                                            <span class="badge badge-sm" 
+                                                  :class="{
+                                                      'badge-success': testCase.status === 'passed',
+                                                      'badge-error': testCase.status === 'failed',
+                                                      'badge-warning': testCase.status === 'skip'
+                                                  }"
+                                                  x-text="testCase.status"></span>
+                                        </div>
+                                        <div class="flex gap-2">
+                                            <!-- Edit button - now opens a modal -->
+                                            <button type="button" class="btn btn-ghost btn-sm" @click="currentTest = testCase; showTestModal = true">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+                                                </svg>
+                                            </button>
+                                            <button type="button" class="btn btn-ghost btn-sm">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+                                                </svg>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+
+                <!-- Right section - Results -->
+                <div class="w-3/5 p-6">
+                    <!-- Run button and version selector -->
+                    <div class="flex justify-between items-center mb-6">
+                        <button class="btn btn-success gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.348a1.125 1.125 0 010 1.971l-11.54 6.347c-.75.412-1.667-.13-1.667-.986V5.653z" />
+                            </svg>
+                            Run
+                        </button>
+                        <button class="btn btn-ghost gap-2" @click="showVersionModal = true">
+                            @v2
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-2 w-2 fill-success" viewBox="0 0 6 6">
+                                <circle cx="3" cy="3" r="3"/>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <!-- Metrics Report -->
+                    <div class="font-mono space-y-2 bg-base-200 p-4 rounded-lg">
+                        <p>Context Precision: 85% (17/20 tests passed)</p>
+                        <p>Context Recall: 92%</p>
+                        <p>Tool call Accuracy: 88%</p>
+                        <p>Factual Correctness: 95%</p>
+                        <p>Faithfulness: 90%</p>
+                        <p>Response Relevancy: 93%</p>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Version Modal -->
+    <dialog class="modal" :class="{ 'modal-open': showVersionModal }">
+        <div class="modal-box max-w-[300px]">
+            <h3 class="font-bold text-lg mb-4">Select Version</h3>
+            <table class="table table-compact w-full">
+                <tbody>
+                    <template x-for="version in ['v1', 'v2', 'v3', 'v4']" :key="version">
+                        <tr class="hover">
+                            <td class="flex items-center justify-between py-1">
+                                <div class="flex items-center gap-2">
+                                    <span x-text="version"></span>
+                                </div>
+                                <button class="btn btn-ghost btn-xs">
+                                    <svg xmlns="http://www.w3.org/2000/svg" 
+                                         class="h-4 w-4" 
+                                         viewBox="0 0 24 24" 
+                                         :fill="version === 'v2' ? 'rgb(34 197 94)' : 'none'"
+                                         :stroke="version === 'v2' ? 'rgb(34 197 94)' : 'currentColor'"
+                                         stroke-width="2">
+                                        <circle cx="12" cy="12" r="9" />
+                                    </svg>
+                                </button>
+                            </td>
+                        </tr>
+                    </template>
+                </tbody>
+            </table>
+            <div class="modal-action">
+                <button class="btn btn-sm" @click="showVersionModal = false">Close</button>
+            </div>
+        </div>
+        <form method="dialog" class="modal-backdrop">
+            <button @click="showVersionModal = false">close</button>
+        </form>
+    </dialog>
+
+    <!-- Test Edit Modal -->
+    <dialog class="modal" :class="{ 'modal-open': showTestModal }">
+        <div class="modal-box">
+            <h3 class="font-bold text-lg mb-4" x-text="currentTest?.title"></h3>
+            <div class="space-y-4">
+                <!-- Test messages -->
+                <template x-if="currentTest" x-for="(message, index) in currentTest.messages" :key="index">
+                    <div class="flex items-start gap-2">
+                        <select class="select select-sm select-bordered" x-model="message.role">
+                            <option>USER</option>
+                            <option>AGENT</option>
+                            <option>TOOL</option>
+                        </select>
+                        <textarea 
+                            class="textarea textarea-bordered flex-1" 
+                            x-model="message.content"
+                            rows="2"
+                        ></textarea>
+                        <button class="btn btn-ghost btn-sm" @click="currentTest.messages.splice(index, 1)">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    </div>
+                </template>
+
+                <!-- Add message button -->
+                <button class="btn btn-ghost btn-sm" @click="currentTest.messages.push({role: 'USER', content: ''})">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                    </svg>
+                    Add Message
+                </button>
+
+                <!-- Status selector -->
+                <div class="form-control">
+                    <label class="label">
+                        <span class="label-text">Test Status</span>
+                    </label>
+                    <select class="select select-bordered" x-model="currentTest.status">
+                        <option value="passed">Passed</option>
+                        <option value="failed">Failed</option>
+                        <option value="skip">Skip</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-action">
+                <button class="btn" @click="showTestModal = false">Cancel</button>
+                <button class="btn btn-primary" @click="showTestModal = false">Save</button>
+            </div>
+        </div>
+        <form method="dialog" class="modal-backdrop">
+            <button @click="showTestModal = false">close</button>
+        </form>
+    </dialog>
+</body>
+</html> 

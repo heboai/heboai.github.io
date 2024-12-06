@@ -1,0 +1,71 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom styles */
+@layer base {
+  html {
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+
+  h1 {
+    @apply text-2xl font-bold;
+  }
+
+  h2 {
+    @apply text-xl font-bold;
+  }
+
+  h3 {
+    @apply text-lg font-medium;
+  }
+}
+
+@layer components {
+  .nav-active {
+    @apply bg-primary;
+  }
+
+  .btn {
+    @apply rounded-lg transition-all duration-200;
+  }
+
+  .btn-primary {
+    @apply shadow-sm hover:shadow;
+  }
+
+  .input, .select, .textarea {
+    @apply rounded-lg border-gray-200;
+  }
+
+  .card {
+    @apply shadow-sm hover:shadow transition-shadow duration-200;
+  }
+
+  /* Custom styles to override drawer width */
+  .drawer-side > aside {
+    --sidebar-width: 16rem; /* equivalent to w-64 */
+    --sidebar-collapsed-width: 4rem; /* equivalent to w-16 */
+    width: var(--sidebar-width) !important;
+    transition: width 0.3s ease-in-out;
+  }
+
+  .drawer-side > aside.collapsed {
+    width: var(--sidebar-collapsed-width) !important;
+  }
+}
+
+/* Typography utilities */
+.text-body {
+  @apply text-base text-gray-600;
+}
+
+.text-body-sm {
+  @apply text-sm text-gray-500;
+}
+
+.text-caption {
+  @apply text-xs text-gray-400;
+} 

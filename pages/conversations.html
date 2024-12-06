@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="bumblebee">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hebo AI - Conversations</title>
+    <link href="../dist/style.css" rel="stylesheet">
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+</head>
+<body class="min-h-screen bg-base-100" x-data="{ 
+    sidebarOpen: true,
+    selectedConversation: null,
+    showKnowledgeModal: false,
+    showEvaluationModal: false,
+    currentConversation: [
+        { role: 'AGENT', content: 'Hello! How can I assist you today?' },
+        { role: 'USER', content: 'I need help with my subscription' },
+        { role: 'AGENT', content: 'I\'ll be happy to help you with your subscription. Could you please provide your account email?' },
+        { role: 'USER', content: 'It\'s john@example.com' }
+    ],
+    conversations: [
+        { id: 1, user: 'John Doe', date: '2024-02-28', status: 'Completed' },
+        { id: 2, user: 'Jane Smith', date: '2024-02-28', status: 'In Progress' },
+        { id: 3, user: 'Bob Wilson', date: '2024-02-27', status: 'Completed' }
+    ]
+}">
+    <div class="drawer lg:drawer-open">
+        <!-- Sidebar -->
+        <input id="sidebar" type="checkbox" class="drawer-toggle" x-model="sidebarOpen" />
+        <!-- Sidebar content -->
+        <div class="drawer-side">
+            <label for="sidebar" class="drawer-overlay"></label>
+            <aside class="bg-base-200 min-h-screen transition-all duration-300 flex flex-col" 
+                  :class="{ 'collapsed': !sidebarOpen }">
+                
+                <!-- Logo section -->
+                <div class="h-16 flex items-center justify-between px-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" 
+                         class="h-4 w-4" 
+                         viewBox="0 0 24 24" 
+                         fill="none" 
+                         stroke="currentColor" 
+                         stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 3v1.5M4.5 8.25H3m18 0h-1.5M4.5 12H3m18 0h-1.5m-15 3.75H3m18 0h-1.5M8.25 19.5V21M12 3v1.5m0 15V21m3.75-18v1.5m0 15V21m-9-1.5h10.5a2.25 2.25 0 002.25-2.25V6.75a2.25 2.25 0 00-2.25-2.25H6.75A2.25 2.25 0 004.5 6.75v10.5a2.25 2.25 0 002.25 2.25zm.75-12h9v9h-9v-9z" />
+                    </svg>
+                    <button class="btn btn-sm btn-ghost" @click="sidebarOpen = !sidebarOpen">
+                        <svg xmlns="http://www.w3.org/2000/svg" 
+                             class="h-4 w-4" 
+                             :class="{ 'rotate-180': !sidebarOpen }"
+                             viewBox="0 0 24 24" 
+                             fill="none" 
+                             stroke="currentColor" 
+                             stroke-width="2">
+                            <path stroke-linecap="round" 
+                                  stroke-linejoin="round" 
+                                  d="M18.75 19.5l-7.5-7.5 7.5-7.5m-6 15L5.25 12l7.5-7.5" />
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Menu section -->
+                <ul class="menu menu-vertical px-2 py-2 gap-1">
+                    <li>
+                        <a href="home.html" class="flex items-center h-8 transition-all duration-300 hover:bg-base-300 mx-2"
+                           :class="{'justify-center rounded-lg': !sidebarOpen, 'rounded-xl': sidebarOpen}">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
+                            </svg>
+                            <span class="ml-3 transition-all duration-300" 
+                                  :class="{'opacity-0 w-0': !sidebarOpen, 'opacity-100': sidebarOpen}">Home</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="agent.html" class="flex items-center h-8 transition-all duration-300 hover:bg-base-300 mx-2"
+                           :class="{'justify-center rounded-lg': !sidebarOpen, 'rounded-xl': sidebarOpen}">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 3v1.5M4.5 8.25H3m18 0h-1.5M4.5 12H3m18 0h-1.5m-15 3.75H3m18 0h-1.5M8.25 19.5V21M12 3v1.5m0 15V21m3.75-18v1.5m0 15V21m-9-1.5h10.5a2.25 2.25 0 002.25-2.25V6.75a2.25 2.25 0 00-2.25-2.25H6.75A2.25 2.25 0 004.5 6.75v10.5a2.25 2.25 0 002.25 2.25zm.75-12h9v9h-9v-9z" />
+                            </svg>
+                            <span class="ml-3 transition-all duration-300" 
+                                  :class="{'opacity-0 w-0': !sidebarOpen, 'opacity-100': sidebarOpen}">Agent</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="knowledge-base.html" class="flex items-center h-8 transition-all duration-300 hover:bg-base-300 mx-2"
+                           :class="{'justify-center rounded-lg': !sidebarOpen, 'rounded-xl': sidebarOpen}">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
+                            </svg>
+                            <span class="ml-3 transition-all duration-300" 
+                                  :class="{'opacity-0 w-0': !sidebarOpen, 'opacity-100': sidebarOpen}">Knowledge Base</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="evaluation.html" class="flex items-center h-8 transition-all duration-300 hover:bg-base-300 mx-2"
+                           :class="{'justify-center rounded-lg': !sidebarOpen, 'rounded-xl': sidebarOpen}">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0112 15a9.065 9.065 0 00-6.23-.693L5 14.5m14.8.8l1.402 1.402c1.232 1.232.65 3.318-1.067 3.611A48.309 48.309 0 0112 21c-2.773 0-5.491-.235-8.135-.687-1.718-.293-2.3-2.379-1.067-3.61L5 14.5" />
+                            </svg>
+                            <span class="ml-3 transition-all duration-300" 
+                                  :class="{'opacity-0 w-0': !sidebarOpen, 'opacity-100': sidebarOpen}">Evaluation</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="conversations.html" class="flex items-center h-8 transition-all duration-300 hover:bg-base-300 bg-primary text-primary-content mx-2"
+                           :class="{'justify-center rounded-lg': !sidebarOpen, 'rounded-xl': sidebarOpen}">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 01.865-.501 48.172 48.172 0 003.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z" />
+                            </svg>
+                            <span class="ml-3 transition-all duration-300" 
+                                  :class="{'opacity-0 w-0': !sidebarOpen, 'opacity-100': sidebarOpen}">Conversations</span>
+                        </a>
+                    </li>
+                </ul>
+
+                <!-- Spacer to push settings to bottom -->
+                <div class="flex-1"></div>
+
+                <!-- Settings and user at bottom -->
+                <ul class="menu menu-vertical px-2 py-2 gap-1 border-t border-base-300">
+                    <li>
+                        <a href="settings.html" class="flex items-center h-8 transition-all duration-300 hover:bg-base-300 mx-2"
+                           :class="{'justify-center rounded-lg': !sidebarOpen, 'rounded-xl': sidebarOpen}">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.24-.438.613-.431.992a6.759 6.759 0 010 .255c-.007.378.138.75.43.99l1.005.828c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 010-.255c.007-.378-.138-.75-.43-.99l-1.004-.828a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            </svg>
+                            <span class="ml-3 transition-all duration-300" 
+                                  :class="{'opacity-0 w-0': !sidebarOpen, 'opacity-100': sidebarOpen}">Organization Settings</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="flex items-center h-8 transition-all duration-300 hover:bg-base-300 mx-2 cursor-pointer"
+                           :class="{'justify-center rounded-lg': !sidebarOpen, 'rounded-xl': sidebarOpen}"
+                           onclick="document.getElementById('user-dropdown').classList.toggle('hidden')">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z" />
+                            </svg>
+                            <span class="ml-3 transition-all duration-300" 
+                                  :class="{'opacity-0 w-0': !sidebarOpen, 'opacity-100': sidebarOpen}">Heinrich</span>
+                        </a>
+                        <ul id="user-dropdown" class="menu dropdown-content hidden ml-4 mt-1 p-2 shadow bg-base-100 rounded-box w-52">
+                            <li><a>Profile</a></li>
+                            <li><a href="../index.html">Logout</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </aside>
+        </div>
+
+        <!-- Main content -->
+        <div class="drawer-content flex flex-col">
+            <!-- Top navigation -->
+            <div class="h-12 flex items-center px-6 bg-base-100 border-b">
+                <div class="text-sm breadcrumbs">
+                    <ul>
+                        <li><a class="text-base-content/70">3cat</a></li>
+                        <li><a class="text-base-content/70">Gato</a></li>
+                        <li class="text-base-content/70">Conversations</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Main content -->
+            <main class="flex h-[calc(100vh-3rem)]">
+                <!-- Left section - Conversations List -->
+                <div class="w-1/3 p-4 border-r">
+                    <div class="form-control mb-2">
+                        <div class="relative">
+                            <input type="text" class="input input-bordered input-sm w-full pl-8" placeholder="Search conversations..." />
+                            <div class="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-base-content/50" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="space-y-1">
+                        <template x-for="conv in conversations" :key="conv.id">
+                            <div class="card bg-base-100 shadow-sm hover:shadow cursor-pointer"
+                                :class="{ 'border border-primary': selectedConversation === conv.id }"
+                                @click="selectedConversation = conv.id">
+                                <div class="card-body p-3">
+                                    <div class="flex justify-between items-start">
+                                        <h3 class="font-medium text-sm" x-text="conv.user"></h3>
+                                        <div class="badge badge-sm" x-text="conv.status"
+                                            :class="conv.status === 'Completed' ? 'badge-success' : 'badge-warning'">
+                                        </div>
+                                    </div>
+                                    <p class="text-xs text-base-content/70" x-text="conv.date"></p>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+
+                <!-- Right section - Chat -->
+                <div class="w-2/3 flex flex-col">
+                    <!-- Chat messages area -->
+                    <div class="flex-1 overflow-y-auto">
+                        <div class="min-h-full flex flex-col justify-end">
+                            <div class="px-6 space-y-4 pb-4">
+                                <div class="chat chat-start">
+                                    <div class="w-[calc(100%-4rem)] rounded-lg p-3">
+                                        Hello! How can I assist you today?
+                                    </div>
+                                </div>
+                                <div class="chat chat-end">
+                                    <div class="max-w-[80%] bg-base-200 rounded-lg px-4 py-3">
+                                        I need help with my subscription
+                                    </div>
+                                </div>
+                                <div class="chat chat-start">
+                                    <div class="w-[calc(100%-4rem)] rounded-lg p-3">
+                                        I'll be happy to help you with your subscription. Could you please provide your account email?
+                                    </div>
+                                </div>
+                                <div class="chat chat-end">
+                                    <div class="max-w-[80%] bg-base-200 rounded-lg px-4 py-3">
+                                        It's john@example.com
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Chat input area -->
+                    <div class="flex-none">
+                        <div class="p-4 bg-base-100">
+                            <div class="relative">
+                                <textarea class="textarea w-full min-h-[4.5rem] bg-base-200 pr-12 border-none" 
+                                    placeholder="Sending a message will trigger a human handover..." rows="2"></textarea>
+                                <div class="absolute bottom-2 left-2">
+                                    <button class="btn btn-ghost btn-sm">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
+                                        </svg>
+                                    </button>
+                                </div>
+                                <div class="absolute bottom-2 right-2">
+                                    <button class="btn btn-ghost btn-sm">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Status footer and action buttons -->
+                        <div class="bg-base-100">
+                            <div class="px-4 py-2 text-xs text-base-content/70 flex items-center justify-center gap-2">
+                                <div class="w-2 h-2 rounded-full bg-success"></div>
+                                The agent is using the last version of Knowledge
+                            </div>
+                            <div class="flex gap-2 px-4 pb-2">
+                                <button class="btn btn-outline btn-xs flex-1" @click="showKnowledgeModal = true">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 mr-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
+                                    </svg>
+                                    Add to Knowledge Base
+                                </button>
+                                <button class="btn btn-outline btn-xs flex-1" @click="showEvaluationModal = true">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 mr-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0112 15a9.065 9.065 0 00-6.23-.693L5 14.5m14.8.8l1.402 1.402c1.232 1.232.65 3.318-1.067 3.611A48.309 48.309 0 0112 21c-2.773 0-5.491-.235-8.135-.687-1.718-.293-2.3-2.379-1.067-3.61L5 14.5" />
+                                    </svg>
+                                    Add to Evaluation
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Add conversation modal -->
+    <dialog class="modal" :class="{ 'modal-open': showKnowledgeModal || showEvaluationModal }">
+        <div class="modal-box">
+            <h3 class="font-bold text-lg" x-text="showKnowledgeModal ? 'Add to Knowledge Base' : 'Add to Evaluation'"></h3>
+            <div class="py-4 space-y-0">
+                <!-- Message inputs -->
+                <template x-for="(message, index) in currentConversation" :key="index">
+                    <div class="flex items-start gap-2">
+                        <div class="relative flex-1">
+                            <div class="absolute left-0 top-0 bottom-0 bg-base-200 rounded-l-lg flex items-center border-r border-base-300 h-[42px]">
+                                <select class="select select-sm bg-base-200 border-none focus:outline-none h-full"
+                                    x-model="message.role">
+                                    <option>USER</option>
+                                    <option>AGENT</option>
+                                    <option>TOOL</option>
+                                </select>
+                            </div>
+                            <div class="w-full" 
+                                x-data="{ resize() { $el.querySelector('textarea').style.height = '42px'; $el.querySelector('textarea').style.height = $el.querySelector('textarea').scrollHeight + 'px' } }"
+                                x-init="resize()"
+                                @input="resize()">
+                                <textarea class="textarea textarea-bordered w-full pl-24 min-h-[42px] overflow-hidden"
+                                    x-model="message.content"
+                                    placeholder="Enter message content..."
+                                    style="resize: none"></textarea>
+                            </div>
+                        </div>
+                        <button type="button" 
+                            class="btn btn-ghost btn-sm"
+                            @click="currentConversation.splice(index, 1)"
+                            x-show="currentConversation.length > 1">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    </div>
+                </template>
+
+                <!-- Add message button -->
+                <button type="button" 
+                    class="btn btn-ghost btn-sm mt-2"
+                    @click="currentConversation.push({role: 'AGENT', content: ''})">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-action">
+                <button class="btn" @click="showKnowledgeModal = false; showEvaluationModal = false">Cancel</button>
+                <button class="btn btn-primary" 
+                    @click="
+                        if (showKnowledgeModal) {
+                            examples.push({messages: [...currentConversation]});
+                        } else {
+                            evaluations.push({messages: [...currentConversation]});
+                        }
+                        showKnowledgeModal = false;
+                        showEvaluationModal = false;
+                    ">
+                    Add
+                </button>
+            </div>
+        </div>
+        <form method="dialog" class="modal-backdrop">
+            <button @click="showKnowledgeModal = false; showEvaluationModal = false">close</button>
+        </form>
+    </dialog>
+</body>
+</html> 

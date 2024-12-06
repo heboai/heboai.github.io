@@ -1,0 +1,16 @@
+hebo-ai-prototype/
+├── index.html
+├── README.md
+├── package.json
+├── tailwind.config.js
+├── src/
+│   ├── css/
+│   │   └── style.css
+│   └── js/
+│       └── app.js
+└── pages/
+    ├── home.html
+    ├── knowledge-base.html
+    ├── evaluation.html
+    ├── conversations.html
+    └── settings.html 

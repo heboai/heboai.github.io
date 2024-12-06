@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="bumblebee">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hebo AI - Agent</title>
+    <link href="../dist/style.css" rel="stylesheet" />
+    <script
+      defer
+      src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"
+    ></script>
+  </head>
+  <body
+    class="min-h-screen bg-base-100"
+    x-data="{ 
+    sidebarOpen: true,
+    showToolModal: false,
+    tools: []
+}"
+  >
+    <div class="drawer lg:drawer-open">
+      <!-- Sidebar -->
+      <input
+        id="sidebar"
+        type="checkbox"
+        class="drawer-toggle"
+        x-model="sidebarOpen"
+      />
+      <div class="drawer-side">
+        <label for="sidebar" class="drawer-overlay"></label>
+        <aside
+          class="bg-base-200 min-h-screen transition-all duration-300 flex flex-col"
+          :class="{ 'collapsed': !sidebarOpen }"
+        >
+          <!-- Logo section -->
+          <div class="h-16 flex items-center justify-between px-4">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-4 w-4"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M8.25 3v1.5M4.5 8.25H3m18 0h-1.5M4.5 12H3m18 0h-1.5m-15 3.75H3m18 0h-1.5M8.25 19.5V21M12 3v1.5m0 15V21m3.75-18v1.5m0 15V21m-9-1.5h10.5a2.25 2.25 0 002.25-2.25V6.75a2.25 2.25 0 00-2.25-2.25H6.75A2.25 2.25 0 004.5 6.75v10.5a2.25 2.25 0 002.25 2.25zm.75-12h9v9h-9v-9z"
+              />
+            </svg>
+            <button
+              class="btn btn-sm btn-ghost"
+              @click="sidebarOpen = !sidebarOpen"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-4 w-4"
+                :class="{ 'rotate-180': !sidebarOpen }"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M18.75 19.5l-7.5-7.5 7.5-7.5m-6 15L5.25 12l7.5-7.5"
+                />
+              </svg>
+            </button>
+          </div>
+
+          <!-- Menu section with all items -->
+          <ul class="menu menu-vertical px-2 py-2 gap-1">
+            <li>
+              <a
+                href="home.html"
+                class="flex items-center h-8 transition-all duration-300 hover:bg-base-300 mx-2"
+                :class="{'justify-center rounded-lg': !sidebarOpen, 'rounded-xl': sidebarOpen}"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-4 w-4"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25"
+                  />
+                </svg>
+                <span
+                  class="ml-3 transition-all duration-300"
+                  :class="{'opacity-0 w-0': !sidebarOpen, 'opacity-100': sidebarOpen}"
+                  >Home</span
+                >
+              </a>
+            </li>
+            <li>
+              <a
+                href="agent.html"
+                class="flex items-center h-8 transition-all duration-300 hover:bg-base-300 bg-primary text-primary-content mx-2"
+                :class="{'justify-center rounded-lg': !sidebarOpen, 'rounded-xl': sidebarOpen}"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-4 w-4"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M8.25 3v1.5M4.5 8.25H3m18 0h-1.5M4.5 12H3m18 0h-1.5m-15 3.75H3m18 0h-1.5M8.25 19.5V21M12 3v1.5m0 15V21m3.75-18v1.5m0 15V21m-9-1.5h10.5a2.25 2.25 0 002.25-2.25V6.75a2.25 2.25 0 00-2.25-2.25H6.75A2.25 2.25 0 004.5 6.75v10.5a2.25 2.25 0 002.25 2.25zm.75-12h9v9h-9v-9z"
+                  />
+                </svg>
+                <span
+                  class="ml-3 transition-all duration-300"
+                  :class="{'opacity-0 w-0': !sidebarOpen, 'opacity-100': sidebarOpen}"
+                  >Agent</span
+                >
+              </a>
+            </li>
+            <li>
+              <a
+                href="knowledge-base.html"
+                class="flex items-center h-8 transition-all duration-300 hover:bg-base-300 mx-2"
+                :class="{'justify-center rounded-lg': !sidebarOpen, 'rounded-xl': sidebarOpen}"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-4 w-4"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"
+                  />
+                </svg>
+                <span
+                  class="ml-3 transition-all duration-300"
+                  :class="{'opacity-0 w-0': !sidebarOpen, 'opacity-100': sidebarOpen}"
+                  >Knowledge Base</span
+                >
+              </a>
+            </li>
+            <li>
+              <a
+                href="evaluation.html"
+                class="flex items-center h-8 transition-all duration-300 hover:bg-base-300 mx-2"
+                :class="{'justify-center rounded-lg': !sidebarOpen, 'rounded-xl': sidebarOpen}"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-4 w-4"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0112 15a9.065 9.065 0 00-6.23-.693L5 14.5m14.8.8l1.402 1.402c1.232 1.232.65 3.318-1.067 3.611A48.309 48.309 0 0112 21c-2.773 0-5.491-.235-8.135-.687-1.718-.293-2.3-2.379-1.067-3.61L5 14.5"
+                  />
+                </svg>
+                <span
+                  class="ml-3 transition-all duration-300"
+                  :class="{'opacity-0 w-0': !sidebarOpen, 'opacity-100': sidebarOpen}"
+                  >Evaluation</span
+                >
+              </a>
+            </li>
+            <li>
+              <a
+                href="conversations.html"
+                class="flex items-center h-8 transition-all duration-300 hover:bg-base-300 mx-2"
+                :class="{'justify-center rounded-lg': !sidebarOpen, 'rounded-xl': sidebarOpen}"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-4 w-4"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 01.865-.501 48.172 48.172 0 003.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z"
+                  />
+                </svg>
+                <span
+                  class="ml-3 transition-all duration-300"
+                  :class="{'opacity-0 w-0': !sidebarOpen, 'opacity-100': sidebarOpen}"
+                  >Conversations</span
+                >
+              </a>
+            </li>
+          </ul>
+
+          <!-- Spacer to push settings to bottom -->
+          <div class="flex-1"></div>
+
+          <!-- Settings and user at bottom -->
+          <ul
+            class="menu menu-vertical px-2 py-2 gap-1 border-t border-base-300"
+          >
+            <li>
+              <a
+                href="settings.html"
+                class="flex items-center h-8 transition-all duration-300 hover:bg-base-300 mx-2"
+                :class="{'justify-center rounded-lg': !sidebarOpen, 'rounded-xl': sidebarOpen}"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-4 w-4"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.24-.438.613-.431.992a6.759 6.759 0 010 .255c-.007.378.138.75.43.99l1.005.828c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 010-.255c.007-.378-.138-.75-.43-.99l-1.004-.828a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281z"
+                  />
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                  />
+                </svg>
+                <span
+                  class="ml-3 transition-all duration-300"
+                  :class="{'opacity-0 w-0': !sidebarOpen, 'opacity-100': sidebarOpen}"
+                  >Organization Settings</span
+                >
+              </a>
+            </li>
+            <li>
+              <a
+                class="flex items-center h-8 transition-all duration-300 hover:bg-base-300 mx-2 cursor-pointer"
+                :class="{'justify-center rounded-lg': !sidebarOpen, 'rounded-xl': sidebarOpen}"
+                onclick="document.getElementById('user-dropdown').classList.toggle('hidden')"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-4 w-4"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z"
+                  />
+                </svg>
+                <span
+                  class="ml-3 transition-all duration-300"
+                  :class="{'opacity-0 w-0': !sidebarOpen, 'opacity-100': sidebarOpen}"
+                  >Heinrich</span
+                >
+              </a>
+              <ul
+                id="user-dropdown"
+                class="menu dropdown-content hidden ml-4 mt-1 p-2 shadow bg-base-100 rounded-box w-52"
+              >
+                <li><a>Profile</a></li>
+                <li><a href="../index.html">Logout</a></li>
+              </ul>
+            </li>
+          </ul>
+        </aside>
+      </div>
+
+      <!-- Main content -->
+      <div class="drawer-content flex flex-col">
+        <!-- Top navigation -->
+        <div class="h-12 flex items-center px-6 bg-base-100 border-b">
+          <div class="text-sm breadcrumbs">
+            <ul>
+              <li><a class="text-base-content/70">3cat</a></li>
+              <li><a class="text-base-content/70">Gato</a></li>
+              <li class="text-base-content/70">Agent</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Main content -->
+        <main class="flex h-[calc(100vh-3rem)]">
+          <!-- Configuration section - make it narrower -->
+          <div class="w-2/5 p-6 overflow-y-auto border-r">
+            <form class="max-w-xl space-y-6">
+              <!-- Core LLM -->
+              <div class="form-control">
+                <label class="label">
+                  <span class="label-text font-bold">Core LLM</span>
+                </label>
+                <select class="select select-bordered w-full">
+                  <option>GPT-4o</option>
+                  <option>GPT-4o mini</option>
+                  <option>o1-preview</option>
+                  <option>o1-mini</option>
+                  <option>claude-3-5-sonnet</option>
+                  <option>claude-3-5-haiku</option>
+                </select>
+                <label class="label">
+                  <span class="label-text-alt">
+                    <strong>Choose the AI model that powers your answers and actions.</strong>
+                    <br/>
+                    This model will be the brain behind generating answers and deciding whether to use additional tools based on the context. Pick a model based on your needs: higher-performing models like GPT-4o are best for complex tasks, while lighter models like GPT-4o mini are faster and more cost-efficient.
+                  </span>
+                </label>
+              </div>
+
+              <!-- Condense LLM -->
+              <div class="form-control">
+                <label class="label">
+                  <span class="label-text font-bold">Condense LLM</span>
+                </label>
+                <select class="select select-bordered w-full">
+                  <option>GPT-4o</option>
+                  <option>GPT-4o mini</option>
+                  <option>o1-preview</option>
+                  <option>o1-mini</option>
+                  <option>claude-3-5-sonnet</option>
+                  <option>claude-3-5-haiku</option>
+                </select>
+                <label class="label">
+                  <span class="label-text-alt">
+                    <strong>Select the model to condense conversations and craft retrieval queries.</strong>
+                    <br/>
+                    This model simplifies ongoing conversations into concise, context-rich questions that guide the retrieval process. Choose a model based on the complexity and performance you need: advanced models handle nuanced contexts better, while lighter models are faster and more efficient.
+                  </span>
+                </label>
+              </div>
+
+              <!-- Embeddings -->
+              <div class="form-control">
+                <label class="label">
+                  <span class="label-text font-bold">Embeddings</span>
+                </label>
+                <select class="select select-bordered w-full">
+                  <option>text-embedding-ada-002</option>
+                  <option>all-MiniLM-L6-v2</option>
+                  <option>embed-english-v2.0</option>
+                  <option>distilbert-base-uncased</option>
+                </select>
+                <label class="label">
+                  <span class="label-text-alt">
+                    <strong>Select the embedding model to convert text into numerical vectors for retrieval.</strong>
+                    <br/>
+                    This model transforms text into numerical vectors, capturing semantic meaning for effective information retrieval. Choose a model that aligns with your performance and accuracy requirements.
+                    <br/><br/>
+                    ⚠️ Changing the embedding model will require the knowledge index to be recreated. This process may take some time depending on the size of your dataset.
+                  </span>
+                </label>
+              </div>
+
+              <!-- Tools Section -->
+              <div class="form-control">
+                <label class="label">
+                  <span class="label-text font-bold">Tools</span>
+                </label>
+                
+                <!-- Tool list with Add button -->
+                <div class="space-y-6">
+                  <!-- Add tool button -->
+                  <button 
+                    type="button"
+                    class="btn btn-outline btn-primary btn-sm"
+                    @click="showToolModal = true"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                    </svg>
+                    Add Tool
+                  </button>
+
+                  <!-- Tool list -->
+                  <div class="space-y-6">
+                    <template x-for="(tool, index) in tools" :key="index">
+                      <div class="card bg-base-200 shadow-sm border border-base-300">
+                        <div class="card-body p-4 space-y-4">
+                          <!-- Tool header with delete button -->
+                          <div class="flex justify-between items-center">
+                            <div class="flex items-center gap-2">
+                              <span class="font-bold" x-text="tool.url"></span>
+                            </div>
+                            <div class="flex gap-2">
+                              <!-- Edit button -->
+                              <button type="button" 
+                                      class="btn btn-ghost btn-sm" 
+                                      @click="
+                                          document.getElementById('tool-url').value = tool.url;
+                                          document.getElementById('tool-usage').value = tool.usage;
+                                          document.getElementById('tool-parameters').value = tool.parameters;
+                                          showToolModal = true
+                                      ">
+                                <svg xmlns="http://www.w3.org/2000/svg" 
+                                     class="h-4 w-4" 
+                                     viewBox="0 0 24 24" 
+                                     fill="none" 
+                                     stroke="currentColor" 
+                                     stroke-width="2">
+                                    <path stroke-linecap="round" 
+                                          stroke-linejoin="round" 
+                                          d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+                                </svg>
+                              </button>
+                              <!-- Delete button -->
+                              <button type="button" 
+                                      class="btn btn-ghost btn-sm" 
+                                      @click="tools.splice(index, 1)">
+                                <svg xmlns="http://www.w3.org/2000/svg" 
+                                     class="h-4 w-4" 
+                                     viewBox="0 0 24 24" 
+                                     fill="none" 
+                                     stroke="currentColor" 
+                                     stroke-width="2">
+                                    <path stroke-linecap="round" 
+                                          stroke-linejoin="round" 
+                                          d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+                                </svg>
+                              </button>
+                            </div>
+                          </div>
+                          <div class="text-sm text-base-content/70">
+                            <p class="mb-2"><strong>Usage:</strong></p>
+                            <p x-text="tool.usage"></p>
+                          </div>
+                          <div class="text-sm text-base-content/70">
+                            <p class="mb-2"><strong>Parameters:</strong></p>
+                            <p x-text="tool.parameters"></p>
+                          </div>
+                        </div>
+                      </div>
+                    </template>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Switches -->
+              <div class="space-y-4">
+                <!-- Artificial Delay Switch -->
+                <div class="form-control">
+                  <label class="label cursor-pointer">
+                    <span class="label-text">
+                      <div class="font-medium">Add artificial delay</div>
+                      <div class="text-sm text-base-content/70">
+                        Enable this option to add a natural typing delay to your agent's responses, creating a more human-like interaction experience.
+                      </div>
+                    </span>
+                    <input type="checkbox" class="toggle toggle-primary" />
+                  </label>
+                </div>
+
+                <!-- Hide Tool Usage Switch -->
+                <div class="form-control">
+                  <label class="label cursor-pointer">
+                    <span class="label-text">
+                      <div class="font-medium">Hide tool usage messages</div>
+                      <div class="text-sm text-base-content/70">
+                        Enable this option to hide the default tool usage announcements, making conversations feel more natural by removing repetitive notifications when tools are being used.
+                      </div>
+                    </span>
+                    <input type="checkbox" class="toggle toggle-primary" />
+                  </label>
+                </div>
+              </div>
+
+              <!-- Action buttons -->
+              <div class="flex justify-end gap-2">
+                <button type="button" class="btn btn-outline">Save Draft</button>
+                <button type="submit" class="btn btn-primary">Publish</button>
+              </div>
+            </form>
+          </div>
+
+          <!-- Chat section - make it wider and fix layout -->
+          <div class="w-3/5 flex flex-col h-[calc(100vh-3rem)]">
+            <!-- Chat messages area -->
+            <div class="flex-1 overflow-y-auto">
+              <div class="min-h-full flex flex-col justify-end">
+                <div class="px-6 space-y-4 pb-4">
+                  <!-- Example messages - you can make this dynamic -->
+                  <div class="chat chat-end">
+                    <div class="max-w-[80%] bg-base-200 rounded-lg px-4 py-3">
+                      I'm trying to understand the difference between Core LLM and Condense LLM. Can you explain?
+                    </div>
+                  </div>
+                  <div class="chat chat-start">
+                    <div class="w-[calc(100%-4rem)] rounded-lg p-3">
+                      The Core LLM is the main model that generates responses and makes decisions about using tools. Think of it as the brain of your agent. The Condense LLM, on the other hand, is specifically used to process and simplify conversation history into concise queries for better context retrieval.
+                    </div>
+                  </div>
+                  <div class="chat chat-end">
+                    <div class="max-w-[80%] bg-base-200 rounded-lg px-4 py-3">
+                      That makes sense. So for simpler use cases, could I use a lighter model for the Condense LLM?
+                    </div>
+                  </div>
+                  <div class="chat chat-start">
+                    <div class="w-[calc(100%-4rem)] rounded-lg p-3">
+                      Yes, exactly! For the Condense LLM, you could use a lighter model like GPT-4o mini or claude-3-5-haiku since the task is more straightforward. This would be more cost-efficient while still maintaining good performance.
+                    </div>
+                  </div>
+                  <div class="chat chat-end">
+                    <div class="max-w-[80%] bg-base-200 rounded-lg px-4 py-3">
+                      Perfect, I'll try that configuration. Thanks!
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Chat input area - fixed at bottom -->
+            <div class="flex-none">
+              <!-- Input section -->
+              <div class="p-4 bg-base-100">
+                <div class="relative">
+                  <textarea 
+                    class="textarea w-full min-h-[4.5rem] bg-base-200 pr-12 border-none"
+                    placeholder="Type your message here..."
+                    rows="2"
+                  ></textarea>
+                  <div class="absolute bottom-2 left-2">
+                    <button class="btn btn-ghost btn-sm">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
+                      </svg>
+                    </button>
+                  </div>
+                  <div class="absolute bottom-2 right-2">
+                    <button class="btn btn-ghost btn-sm">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Status footer -->
+              <div class="px-4 py-2 bg-base-100 text-xs text-base-content/70 flex items-center justify-center gap-2">
+                <div class="w-2 h-2 rounded-full bg-success"></div>
+                The agent is using the last version of Knowledge
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <!-- Add this new modal dialog -->
+    <dialog class="modal" :class="{ 'modal-open': showToolModal }">
+      <div class="modal-box">
+        <h3 class="font-bold text-lg">Add Tool</h3>
+        <div class="py-4 space-y-4">
+          <div class="form-control">
+            <label class="label">
+              <span class="label-text">OpenAPI URL</span>
+            </label>
+            <input type="url" 
+                   id="tool-url"
+                   class="input input-bordered" 
+                   placeholder="https://api.example.com/openapi.json"/>
+          </div>
+          <div class="form-control">
+            <label class="label">
+              <span class="label-text">Usage Description</span>
+            </label>
+            <textarea 
+              id="tool-usage"
+              class="textarea textarea-bordered h-32" 
+              placeholder="Describe how and when the LLM should use this API..."></textarea>
+          </div>
+          <div class="form-control">
+            <label class="label">
+              <span class="label-text">Parameters Description</span>
+            </label>
+            <textarea 
+              id="tool-parameters"
+              class="textarea textarea-bordered h-32" 
+              placeholder="Describe the parameters this API accepts and their purpose..."></textarea>
+          </div>
+        </div>
+        <div class="modal-action">
+          <button class="btn" @click="showToolModal = false">Cancel</button>
+          <button class="btn btn-primary" 
+                  @click="tools.push({
+                    url: document.getElementById('tool-url').value,
+                    usage: document.getElementById('tool-usage').value,
+                    parameters: document.getElementById('tool-parameters').value
+                  }); showToolModal = false">Add</button>
+        </div>
+      </div>
+      <form method="dialog" class="modal-backdrop">
+        <button @click="showToolModal = false">close</button>
+      </form>
+    </dialog>
+  </body>
+</html>
