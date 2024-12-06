@@ -13,1085 +13,740 @@
   <body
     class="min-h-screen bg-base-100"
     x-data="{ 
-    sidebarOpen: true,
-    showAddModal: false,
-    showScenarioModal: false,
-    showExampleModal: false,
+    currentSection: 'role',
     showVersionModal: false,
-    currentSection: '',
-    scenarios: [],
-    examples: [],
-    messages: [{role: 'USER', content: ''}],
-    entries: [
-        { id: 1, title: 'Customer Onboarding', category: 'Process', updated: '2024-02-28' },
-        { id: 2, title: 'Product Features', category: 'Documentation', updated: '2024-02-27' },
-        { id: 3, title: 'Troubleshooting Guide', category: 'Support', updated: '2024-02-26' }
-    ]
+    newKeyName: '',
+    generatedKey: null,
+    showKey: false,
+    selectedLang: 'curl',
+    slashMenu: {
+      show: false,
+      x: 0,
+      y: 0
+    }
 }"
   >
-    <div class="drawer lg:drawer-open">
-      <input
-        id="sidebar"
-        type="checkbox"
-        class="drawer-toggle"
-        x-model="sidebarOpen"
-      />
-
-      <div class="drawer-side">
-        <label for="sidebar" class="drawer-overlay"></label>
-        <aside
-          class="bg-base-200 min-h-screen transition-all duration-300 flex flex-col"
-          :class="{ 'collapsed': !sidebarOpen }"
-        >
+    <div class="flex flex-col min-h-screen">
+      <!-- Top Navigation -->
+      <nav class="bg-base-200 border-b">
+        <div class="flex items-center justify-between h-16 px-6">
           <!-- Logo section -->
-          <div class="h-16 flex items-center justify-between px-4">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-4 w-4"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M8.25 3v1.5M4.5 8.25H3m18 0h-1.5M4.5 12H3m18 0h-1.5m-15 3.75H3m18 0h-1.5M8.25 19.5V21M12 3v1.5m0 15V21m3.75-18v1.5m0 15V21m-9-1.5h10.5a2.25 2.25 0 002.25-2.25V6.75a2.25 2.25 0 00-2.25-2.25H6.75A2.25 2.25 0 004.5 6.75v10.5a2.25 2.25 0 002.25 2.25zm.75-12h9v9h-9v-9z"
-              />
+          <a href="projects.html" class="text-primary hover:text-primary-focus inline-flex items-center gap-1">
+            Gato@v2
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 6 6" class="w-2 h-2 fill-success">
+              <circle cx="3" cy="3" r="3" />
             </svg>
-            <button
-              class="btn btn-sm btn-ghost"
-              @click="sidebarOpen = !sidebarOpen"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="h-4 w-4"
-                :class="{ 'rotate-180': !sidebarOpen }"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M18.75 19.5l-7.5-7.5 7.5-7.5m-6 15L5.25 12l7.5-7.5"
-                />
+          </a>
+
+          <!-- Main navigation -->
+          <div class="flex items-center gap-2">
+            <a href="home.html" class="btn btn-sm btn-ghost">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
               </svg>
-            </button>
+              <span class="ml-1">Dashboard</span>
+            </a>
+            <a href="knowledge-base.html" class="btn btn-sm btn-primary">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
+              </svg>
+              <span class="ml-1">Knowledge Base</span>
+            </a>
+            <a href="evaluation.html" class="btn btn-sm btn-ghost">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0112 15a9.065 9.065 0 00-6.23-.693L5 14.5m14.8.8l1.402 1.402c1.232 1.232.65 3.318-1.067 3.611A48.309 48.309 0 0112 21c-2.773 0-5.491-.235-8.135-.687-1.718-.293-2.3-2.379-1.067-3.61L5 14.5" />
+              </svg>
+              <span class="ml-1">Evaluation</span>
+            </a>
+            <a href="conversations.html" class="btn btn-sm btn-ghost">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 01.865-.501 48.172 48.172 0 003.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z" />
+              </svg>
+              <span class="ml-1">Conversations</span>
+            </a>
           </div>
 
-          <!-- Menu section -->
-          <ul class="menu menu-vertical px-2 py-2 gap-1">
-            <li>
-              <a
-                href="home.html"
-                class="flex items-center h-8 transition-all duration-300 hover:bg-base-300 mx-2"
-                :class="{'justify-center rounded-lg': !sidebarOpen, 'rounded-xl': sidebarOpen}"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="h-4 w-4"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25"
-                  />
+          <!-- Settings and user section -->
+          <div class="flex items-center gap-2">
+            <a href="settings.html" class="btn btn-sm btn-ghost">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.24-.438.613-.431.992a6.759 6.759 0 010 .255c-.007.378.138.75.43.99l1.005.828c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 010-.255c.007-.378-.138-.75-.43-.99l-1.004-.828a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281z" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+              <span class="ml-1">Settings</span>
+            </a>
+            <div class="dropdown dropdown-end">
+              <button class="btn btn-sm btn-ghost" onclick="document.getElementById('user-dropdown').classList.toggle('hidden')">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z" />
                 </svg>
-                <span
-                  class="ml-3 transition-all duration-300"
-                  :class="{'opacity-0 w-0': !sidebarOpen, 'opacity-100': sidebarOpen}"
-                  >Home</span
-                >
-              </a>
-            </li>
-            <li>
-              <a
-                href="agent.html"
-                class="flex items-center h-8 transition-all duration-300 hover:bg-base-300 mx-2"
-                :class="{'justify-center rounded-lg': !sidebarOpen, 'rounded-xl': sidebarOpen}"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="h-4 w-4"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    d="M8.25 3v1.5M4.5 8.25H3m18 0h-1.5M4.5 12H3m18 0h-1.5m-15 3.75H3m18 0h-1.5M8.25 19.5V21M12 3v1.5m0 15V21m3.75-18v1.5m0 15V21m-9-1.5h10.5a2.25 2.25 0 002.25-2.25V6.75a2.25 2.25 0 00-2.25-2.25H6.75A2.25 2.25 0 004.5 6.75v10.5a2.25 2.25 0 002.25 2.25zm.75-12h9v9h-9v-9z"
-                  />
-                </svg>
-                <span
-                  class="ml-3 transition-all duration-300"
-                  :class="{'opacity-0 w-0': !sidebarOpen, 'opacity-100': sidebarOpen}"
-                  >Agent</span
-                >
-              </a>
-            </li>
-            <li>
-              <a
-                href="knowledge-base.html"
-                class="flex items-center h-8 transition-all duration-300 hover:bg-base-300 bg-primary text-primary-content mx-2"
-                :class="{'justify-center rounded-lg': !sidebarOpen, 'rounded-xl': sidebarOpen}"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="h-4 w-4"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"
-                  />
-                </svg>
-                <span
-                  class="ml-3 transition-all duration-300"
-                  :class="{'opacity-0 w-0': !sidebarOpen, 'opacity-100': sidebarOpen}"
-                  >Knowledge Base
-                </span>
-              </a>
-              <ul class="menu menu-compact">
-                <li>
-                  <a
-                    href="#role"
-                    class="pl-9 h-8"
-                    @click="currentSection = 'Role'; document.getElementById('role').scrollIntoView({behavior: 'smooth'})"
-                    >Role</a
-                  >
-                </li>
-                <li>
-                  <a
-                    href="#formatting"
-                    class="pl-9 h-8"
-                    @click="currentSection = 'Formatting'; document.getElementById('formatting').scrollIntoView({behavior: 'smooth'})"
-                    >Formatting</a
-                  >
-                </li>
-                <li>
-                  <a
-                    href="#scenarios"
-                    class="pl-9 h-8"
-                    @click="currentSection = 'Scenarios'; document.getElementById('scenarios').scrollIntoView({behavior: 'smooth'})"
-                    >Scenarios</a
-                  >
-                </li>
-                <li>
-                  <a
-                    href="#examples"
-                    class="pl-9 h-8"
-                    @click="currentSection = 'Examples'; document.getElementById('examples').scrollIntoView({behavior: 'smooth'})"
-                    >Examples</a
-                  >
-                </li>
-              </ul>
-            </li>
-            <li>
-              <a
-                href="evaluation.html"
-                class="flex items-center h-8 transition-all duration-300 hover:bg-base-300 mx-2"
-                :class="{'justify-center rounded-lg': !sidebarOpen, 'rounded-xl': sidebarOpen}"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="h-4 w-4"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0112 15a9.065 9.065 0 00-6.23-.693L5 14.5m14.8.8l1.402 1.402c1.232 1.232.65 3.318-1.067 3.611A48.309 48.309 0 0112 21c-2.773 0-5.491-.235-8.135-.687-1.718-.293-2.3-2.379-1.067-3.61L5 14.5"
-                  />
-                </svg>
-                <span
-                  class="ml-3 transition-all duration-300"
-                  :class="{'opacity-0 w-0': !sidebarOpen, 'opacity-100': sidebarOpen}"
-                  >Evaluation</span
-                >
-              </a>
-            </li>
-            <li>
-              <a
-                href="conversations.html"
-                class="flex items-center h-8 transition-all duration-300 hover:bg-base-300 mx-2"
-                :class="{'justify-center rounded-lg': !sidebarOpen, 'rounded-xl': sidebarOpen}"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="h-4 w-4"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 01.865-.501 48.172 48.172 0 003.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z"
-                  />
-                </svg>
-                <span
-                  class="ml-3 transition-all duration-300"
-                  :class="{'opacity-0 w-0': !sidebarOpen, 'opacity-100': sidebarOpen}"
-                  >Conversations</span
-                >
-              </a>
-            </li>
-          </ul>
-
-          <!-- Spacer to push settings to bottom -->
-          <div class="flex-1"></div>
-
-          <!-- Settings and user at bottom -->
-          <ul
-            class="menu menu-vertical px-2 py-2 gap-1 border-t border-base-300"
-          >
-            <li>
-              <a
-                href="settings.html"
-                class="flex items-center h-8 transition-all duration-300 hover:bg-base-300 mx-2"
-                :class="{'justify-center rounded-lg': !sidebarOpen, 'rounded-xl': sidebarOpen}"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="h-4 w-4"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.24-.438.613-.431.992a6.759 6.759 0 010 .255c-.007.378.138.75.43.99l1.005.828c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 010-.255c.007-.378-.138-.75-.43-.99l-1.004-.828a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281z"
-                  />
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                  />
-                </svg>
-                <span
-                  class="ml-3 transition-all duration-300"
-                  :class="{'opacity-0 w-0': !sidebarOpen, 'opacity-100': sidebarOpen}"
-                  >Organization Settings</span
-                >
-              </a>
-            </li>
-            <li>
-              <a
-                class="flex items-center h-8 transition-all duration-300 hover:bg-base-300 mx-2 cursor-pointer"
-                :class="{'justify-center rounded-lg': !sidebarOpen, 'rounded-xl': sidebarOpen}"
-                onclick="document.getElementById('user-dropdown').classList.toggle('hidden')"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="h-4 w-4"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z"
-                  />
-                </svg>
-                <span
-                  class="ml-3 transition-all duration-300"
-                  :class="{'opacity-0 w-0': !sidebarOpen, 'opacity-100': sidebarOpen}"
-                  >Heinrich</span
-                >
-              </a>
-              <ul
-                id="user-dropdown"
-                class="menu dropdown-content hidden ml-4 mt-1 p-2 shadow bg-base-100 rounded-box w-52"
-              >
+                <span class="ml-1">Heinrich</span>
+              </button>
+              <ul id="user-dropdown" class="hidden dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52 mt-2">
                 <li><a>Profile</a></li>
                 <li><a href="../index.html">Logout</a></li>
               </ul>
-            </li>
-          </ul>
-        </aside>
-      </div>
-
-      <div class="drawer-content flex flex-col">
-        <div class="h-12 flex items-center px-6 bg-base-100 border-b">
-          <div class="text-sm breadcrumbs">
-            <ul>
-              <li><a class="text-base-content/70">3cat</a></li>
-              <li><a class="text-base-content/70">Gato</a></li>
-              <li class="text-base-content/70">
-                <a
-                  @click="showVersionModal = true"
-                  class="text-primary hover:text-primary-focus inline-flex items-center gap-1 cursor-pointer"
-                >
-                  Knowledge Base@v2
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 6 6"
-                    class="w-2 h-2 fill-success"
-                  >
-                    <circle cx="3" cy="3" r="3" />
-                  </svg>
-                </a>
-              </li>
-              <li
-                class="text-base-content/70"
-                x-show="currentSection"
-                x-text="currentSection"
-              ></li>
-            </ul>
+            </div>
           </div>
         </div>
+      </nav>
 
-        <main class="flex h-[calc(100vh-3rem)]">
-          <!-- Left section - Knowledge Base content -->
-          <div class="w-2/5 p-6 overflow-y-auto border-r">
-            <form class="max-w-xl space-y-6">
-              <!-- Role section -->
-              <div id="role" class="form-control">
-                <label class="label">
-                  <span class="label-text font-bold">Role</span>
-                </label>
-                <textarea
-                  class="textarea textarea-bordered h-48"
-                  placeholder="Describe the role and purpose of your AI agent..."
-                ></textarea>
-                <label class="label">
-                  <span class="label-text-alt">
-                    <strong
-                      >Define your agent's core purpose and behavior.</strong
-                    >
-                    <br />
-                    Clearly describe what your agent should do, how it should
-                    interact, and any specific guidelines or limitations it
-                    should follow.
-                  </span>
-                </label>
-              </div>
-
-              <!-- Formatting section -->
-              <div id="formatting" class="form-control">
-                <label class="label">
-                  <span class="label-text font-bold">Formatting</span>
-                </label>
-                <textarea
-                  class="textarea textarea-bordered h-48"
-                  placeholder="Describe how the agent should format and structure its responses..."
-                ></textarea>
-                <label class="label">
-                  <span class="label-text-alt">
-                    <strong
-                      >Define how responses should be structured and
-                      formatted.</strong
-                    >
-                    <br />
-                    Specify any requirements for response formatting, such as
-                    using specific markdown elements, including headers, using
-                    bullet points, or organizing information in a particular
-                    way.
-                  </span>
-                </label>
-              </div>
-
-              <!-- Scenarios section -->
-              <div id="scenarios" class="form-control">
-                <label class="label">
-                  <span class="label-text font-bold">Scenarios</span>
-                </label>
-
-                <!-- Search and Add button row -->
-                <div class="space-y-4 mb-4">
-                  <!-- Search bar with magnifier icon -->
-                  <div class="relative">
-                    <input
-                      type="text"
-                      class="input input-bordered w-full pl-10"
-                      placeholder="Search scenarios..."
-                    />
-                    <div
-                      class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        class="h-5 w-5 text-base-content/50"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                      >
-                        <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
-                        />
-                      </svg>
-                    </div>
-                  </div>
-
-                  <!-- Add scenario button -->
-                  <div class="flex justify-start gap-2">
-                    <button
-                      type="button"
-                      class="btn btn-outline btn-primary btn-sm"
-                      @click="showScenarioModal = true"
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        class="h-4 w-4 mr-2"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                      >
-                        <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          d="M12 4.5v15m7.5-7.5h-15"
-                        />
-                      </svg>
-                      Add Scenario
-                    </button>
-                    <label class="btn btn-outline btn-sm">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        class="h-4 w-4 mr-2"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                      >
-                        <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"
-                        />
-                      </svg>
-                      Upload From File
-                      <input
-                        type="file"
-                        class="hidden"
-                        accept=".json,.yaml,.yml"
-                      />
-                    </label>
-                  </div>
-                </div>
-
-                <!-- Scenarios list -->
-                <div class="space-y-6">
-                  <template x-for="(scenario, index) in scenarios" :key="index">
-                    <div
-                      class="card bg-base-200 shadow-sm border border-base-300"
-                    >
-                      <div class="card-body p-4 space-y-4">
-                        <!-- Scenario header with delete button -->
-                        <div class="flex justify-between items-center">
-                          <div class="flex items-center gap-2">
-                            <span
-                              class="font-bold"
-                              x-text="scenario.title"
-                            ></span>
-                            <!-- Add handover indicator -->
-                            <div 
-                              x-show="scenario.handover"
-                              class="tooltip tooltip-right" 
-                              data-tip="Handover enabled"
-                            >
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                class="h-4 w-4 text-primary"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                stroke-width="2"
-                              >
-                                <path
-                                  stroke-linecap="round"
-                                  stroke-linejoin="round"
-                                  d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5"
-                                />
-                              </svg>
-                            </div>
-                          </div>
-                          <div class="flex gap-2">
-                            <!-- Edit button -->
-                            <button
-                              type="button"
-                              class="btn btn-ghost btn-sm"
-                              @click="
-                                                                document.getElementById('scenario-title').value = scenario.title;
-                                                                document.getElementById('scenario-description').value = scenario.description;
-                                                                showScenarioModal = true
-                                                            "
-                            >
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                class="h-4 w-4"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                stroke-width="2"
-                              >
-                                <path
-                                  stroke-linecap="round"
-                                  stroke-linejoin="round"
-                                  d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"
-                                />
-                              </svg>
-                            </button>
-                            <!-- Delete button -->
-                            <button
-                              type="button"
-                              class="btn btn-ghost btn-sm"
-                              @click="scenarios.splice(index, 1)"
-                            >
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                class="h-4 w-4"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                stroke-width="2"
-                              >
-                                <path
-                                  stroke-linecap="round"
-                                  stroke-linejoin="round"
-                                  d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
-                                />
-                              </svg>
-                            </button>
-                          </div>
-                        </div>
-                        <p
-                          class="text-sm text-base-content/70"
-                          x-text="scenario.description"
-                        ></p>
-                      </div>
-                    </div>
-                  </template>
-                </div>
-              </div>
-
-              <!-- Examples section -->
-              <div id="examples" class="form-control">
-                <label class="label">
-                  <span class="label-text font-bold">Examples</span>
-                </label>
-
-                <!-- Search and Add button row -->
-                <div class="space-y-4 mb-4">
-                  <!-- Search bar with magnifier icon -->
-                  <div class="relative">
-                    <input
-                      type="text"
-                      class="input input-bordered w-full pl-10"
-                      placeholder="Search examples..."
-                    />
-                    <div
-                      class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        class="h-5 w-5 text-base-content/50"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                      >
-                        <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
-                        />
-                      </svg>
-                    </div>
-                  </div>
-
-                  <!-- Add example button -->
-                  <div class="flex justify-start gap-2">
-                    <button
-                      type="button"
-                      class="btn btn-outline btn-primary btn-sm"
-                      @click="showExampleModal = true"
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        class="h-4 w-4 mr-2"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                      >
-                        <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          d="M12 4.5v15m7.5-7.5h-15"
-                        />
-                      </svg>
-                      Add Example
-                    </button>
-                    <label class="btn btn-outline btn-sm">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        class="h-4 w-4 mr-2"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                      >
-                        <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"
-                        />
-                      </svg>
-                      Upload From File
-                      <input
-                        type="file"
-                        class="hidden"
-                        accept=".json,.yaml,.yml"
-                      />
-                    </label>
-                  </div>
-                </div>
-
-                <!-- Examples list -->
-                <div class="space-y-6">
-                  <template x-for="(example, index) in examples" :key="index">
-                    <div
-                      class="card bg-base-200 shadow-sm border border-base-300"
-                    >
-                      <div class="card-body p-4 space-y-4">
-                        <!-- Example header with delete button -->
-                        <div class="flex justify-between items-center">
-                          <div class="flex items-center gap-2">
-                            <span class="font-bold"
-                              >Example #<span x-text="index + 1"></span
-                            ></span>
-                          </div>
-                          <div class="flex gap-2">
-                            <!-- Edit button -->
-                            <button
-                              type="button"
-                              class="btn btn-ghost btn-sm"
-                              @click="currentExample = example; showExampleModal = true"
-                            >
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                class="h-4 w-4"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                stroke-width="2"
-                              >
-                                <path
-                                  stroke-linecap="round"
-                                  stroke-linejoin="round"
-                                  d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"
-                                />
-                              </svg>
-                            </button>
-                            <!-- Delete button -->
-                            <button
-                              type="button"
-                              class="btn btn-ghost btn-sm"
-                              @click="examples.splice(index, 1)"
-                            >
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                class="h-4 w-4"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                stroke-width="2"
-                              >
-                                <path
-                                  stroke-linecap="round"
-                                  stroke-linejoin="round"
-                                  d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
-                                />
-                              </svg>
-                            </button>
-                          </div>
-                        </div>
-                        <!-- Example messages -->
-                        <template
-                          x-for="(message, msgIndex) in example.messages"
-                          :key="msgIndex"
-                        >
-                          <div class="flex items-start gap-2">
-                            <span
-                              class="badge badge-sm"
-                              :class="{
-                                                              'badge-primary': message.role === 'USER',
-                                                              'badge-secondary': message.role === 'AGENT',
-                                                              'badge-accent': message.role === 'TOOL'
-                                                          }"
-                              x-text="message.role"
-                            ></span>
-                            <p
-                              class="text-sm text-base-content/70"
-                              x-text="message.content"
-                            ></p>
-                          </div>
-                        </template>
-                      </div>
-                    </div>
-                  </template>
-                </div>
-              </div>
-
-              <!-- Action buttons -->
-              <div class="flex justify-end gap-2">
-                <button type="button" class="btn btn-outline">
-                  Save Draft
-                </button>
-                <button type="submit" class="btn btn-primary">Publish</button>
-              </div>
-            </form>
-          </div>
-
-          <!-- Chat section - copied from agent.html -->
-          <div class="w-3/5 flex flex-col h-[calc(100vh-3rem)]">
-            <!-- Chat messages area -->
-            <div class="flex-1 overflow-y-auto">
-              <div class="min-h-full flex flex-col justify-end">
-                <div class="px-6 space-y-4 pb-4">
-                  <!-- Example messages -->
-                  <div class="chat chat-end">
-                    <div class="max-w-[80%] bg-base-200 rounded-lg px-4 py-3">
-                      How can I add new entries to the knowledge base?
-                    </div>
-                  </div>
-                  <div class="chat chat-start">
-                    <div class="w-[calc(100%-4rem)] rounded-lg p-3">
-                      You can add new entries by clicking the "Add Entry" button
-                      at the top of the knowledge base section. This will open a
-                      modal where you can input the title, category, and content
-                      for your new entry.
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Chat input area - fixed at bottom -->
-            <div class="flex-none">
-              <!-- Input section -->
-              <div class="p-4 bg-base-100">
+      <!-- Main content area -->
+      <div class="drawer-content flex flex-col h-[calc(100vh-4rem)]">
+        <div class="flex h-full">
+          <!-- Workspace sidebar -->
+          <aside class="w-64 bg-base-200 border-r flex flex-col">
+            <!-- Navigation takes remaining space -->
+            <nav class="flex-1 p-2">
+              <!-- Workspace navigation -->
+              <div class="px-2 mb-4">
                 <div class="relative">
-                  <textarea
-                    class="textarea w-full min-h-[4.5rem] bg-base-200 pr-12 border-none"
-                    placeholder="Type your message here..."
-                    rows="2"
-                  ></textarea>
-                  <div class="absolute bottom-2 left-2">
-                    <button class="btn btn-ghost btn-sm">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        class="h-5 w-5"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                      >
-                        <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"
-                        />
-                      </svg>
-                    </button>
-                  </div>
-                  <div class="absolute bottom-2 right-2">
-                    <button class="btn btn-ghost btn-sm">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        class="h-5 w-5"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                      >
-                        <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5"
-                        />
-                      </svg>
-                    </button>
+                  <input type="text" 
+                         placeholder="Search knowledge..." 
+                         class="input input-sm input-bordered w-full pl-9" />
+                  <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-base-content/50" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+                    </svg>
                   </div>
                 </div>
               </div>
 
-              <!-- Status footer -->
-              <div
-                class="px-4 py-2 bg-base-100 text-xs text-base-content/70 flex items-center justify-center gap-2"
-              >
-                <div class="w-2 h-2 rounded-full bg-success"></div>
-                The agent is using the last version of Knowledge
+              <!-- Knowledge Base Items -->
+              <div class="mb-6">
+                <div class="text-xs font-semibold text-base-content/50 uppercase tracking-wider px-3 mb-2">Knowledge Base</div>
+                <ul class="space-y-0.5">
+                  <li>
+                    <a href="#role" 
+                       class="block px-3 py-1.5 rounded-lg transition-colors hover:bg-base-300 text-sm"
+                       :class="{ 'bg-primary text-primary-content': currentSection === 'role' }"
+                       @click="currentSection = 'role'">
+                      Role
+                    </a>
+                  </li>
+                  <li>
+                    <a href="#formatting" 
+                       class="block px-3 py-1.5 rounded-lg transition-colors hover:bg-base-300 text-sm"
+                       :class="{ 'bg-primary text-primary-content': currentSection === 'formatting' }"
+                       @click="currentSection = 'formatting'">
+                      Formatting
+                    </a>
+                  </li>
+                  <li>
+                    <a href="#scenario1" 
+                       class="block px-3 py-1.5 rounded-lg transition-colors hover:bg-base-300 text-sm"
+                       :class="{ 'bg-primary text-primary-content': currentSection === 'scenario1' }"
+                       @click="currentSection = 'scenario1'">
+                      Scenario 1
+                    </a>
+                  </li>
+                  <li>
+                    <a href="#examples" 
+                       class="block px-3 py-1.5 rounded-lg transition-colors hover:bg-base-300 text-sm"
+                       :class="{ 'bg-primary text-primary-content': currentSection === 'examples' }"
+                       @click="currentSection = 'examples'">
+                      Examples
+                    </a>
+                  </li>
+                </ul>
               </div>
-            </div>
-          </div>
-        </main>
 
-        <dialog class="modal" :class="{ 'modal-open': showAddModal }">
-          <div class="modal-box">
-            <h3 class="font-bold text-lg">Add Knowledge Base Entry</h3>
-            <div class="py-4">
-              <div class="form-control">
-                <label class="label">
-                  <span class="label-text">Title</span>
-                </label>
-                <input type="text" class="input input-bordered" />
+              <!-- Configuration Section - Separated -->
+              <div>
+                <div class="text-xs font-semibold text-base-content/50 uppercase tracking-wider px-3 mb-2">Agent</div>
+                <ul class="space-y-0.5">
+                  <li>
+                    <a href="#settings" 
+                       class="block px-3 py-1.5 rounded-lg transition-colors hover:bg-base-300 text-sm"
+                       :class="{ 'bg-primary text-primary-content': currentSection === 'settings' }"
+                       @click="currentSection = 'settings'">
+                      Configuration
+                    </a>
+                  </li>
+                </ul>
               </div>
-              <div class="form-control mt-4">
-                <label class="label">
-                  <span class="label-text">Category</span>
-                </label>
-                <select class="select select-bordered">
-                  <option>Process</option>
-                  <option>Documentation</option>
-                  <option>Support</option>
-                </select>
-              </div>
-              <div class="form-control mt-4">
-                <label class="label">
-                  <span class="label-text">Content</span>
-                </label>
-                <textarea class="textarea textarea-bordered h-24"></textarea>
-              </div>
-            </div>
-            <div class="modal-action">
-              <button class="btn" @click="showAddModal = false">Cancel</button>
-              <button class="btn btn-primary" @click="showAddModal = false">
-                Save
+            </nav>
+
+            <!-- New page button - fixed at bottom -->
+            <div class="p-4 border-t">
+              <button class="btn btn-outline btn-sm w-full">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                </svg>
+                Piece of Knowledge
               </button>
             </div>
-          </div>
-          <form method="dialog" class="modal-backdrop">
-            <button @click="showAddModal = false">close</button>
-          </form>
-        </dialog>
+          </aside>
 
-        <!-- Add this new modal dialog after the existing modal -->
-        <dialog class="modal" :class="{ 'modal-open': showScenarioModal }">
-          <div class="modal-box">
-            <h3 class="font-bold text-lg">Add Scenario</h3>
-            <div class="py-4 space-y-4">
-              <div class="form-control">
-                <label class="label">
-                  <span class="label-text">Title</span>
-                </label>
-                <input
-                  type="text"
-                  id="scenario-title"
-                  class="input input-bordered"
-                  placeholder="Enter scenario title"
-                />
-              </div>
-              <div class="form-control">
-                <label class="label">
-                  <span class="label-text">Description</span>
-                </label>
-                <textarea
-                  id="scenario-description"
-                  class="textarea textarea-bordered h-32"
-                  placeholder="Describe the scenario rules and instructions..."
-                ></textarea>
-              </div>
-              <!-- Add toggle for handover -->
-              <div class="form-control">
-                <label class="label cursor-pointer">
-                  <span class="label-text">Hand over scenario</span>
-                  <input type="checkbox" id="scenario-handover" class="toggle toggle-primary" />
-                </label>
-                <label class="label">
-                  <span class="label-text-alt text-base-content/70"
-                    >When enabled, the agent will automatically detect similar
-                    scenarios and suggest a handover to a human operator.</span
+          <!-- Content and chat area -->
+          <div class="flex flex-1">
+            <!-- Left content pane - scrollable -->
+            <div class="w-3/5 bg-white overflow-y-auto">
+              <!-- Role content -->
+              <div x-show="currentSection === 'role'" class="max-w-3xl mx-auto py-20 px-12">
+                <div class="prose max-w-none">
+                  <div 
+                    contenteditable="true" 
+                    class="outline-none"
+                    @keydown.slash.prevent="
+                      const selection = window.getSelection();
+                      const range = selection.getRangeAt(0);
+                      
+                      // Create a temporary span to measure position
+                      const span = document.createElement('span');
+                      range.insertNode(span);
+                      
+                      // Get the position relative to the viewport
+                      const rect = span.getBoundingClientRect();
+                      
+                      // Calculate position accounting for scroll
+                      slashMenu.x = rect.left + window.scrollX;
+                      slashMenu.y = rect.top + rect.height + window.scrollY;
+                      
+                      // Remove the temporary span
+                      span.parentNode.removeChild(span);
+                      
+                      // Restore the selection
+                      selection.removeAllRanges();
+                      selection.addRange(range);
+                      
+                      slashMenu.show = true;
+                    "
+                    @keydown.escape="slashMenu.show = false"
+                    @click="slashMenu.show = false"
                   >
-                </label>
-              </div>
-            </div>
-            <div class="modal-action">
-              <button class="btn" @click="showScenarioModal = false">
-                Cancel
-              </button>
-              <button
-                class="btn btn-primary"
-                @click="scenarios.push({
-                                    title: document.getElementById('scenario-title').value,
-                                    description: document.getElementById('scenario-description').value,
-                                    handover: document.getElementById('scenario-handover').checked
-                                }); showScenarioModal = false"
-              >
-                Add
-              </button>
-            </div>
-          </div>
-          <form method="dialog" class="modal-backdrop">
-            <button @click="showScenarioModal = false">close</button>
-          </form>
-        </dialog>
+                    <h1 class="text-4xl font-bold mb-8">Role Definition</h1>
+                    <div class="text-lg text-base-content/80 leading-relaxed">
+                      You are an AI assistant for Hebo, a customer support automation platform.
+                      Your primary role is to help users with their inquiries about the platform's features,
+                      subscription management, and technical support.
 
-        <!-- Add this new modal dialog -->
-        <dialog class="modal" :class="{ 'modal-open': showExampleModal }">
-          <div class="modal-box">
-            <h3 class="font-bold text-lg">Add Example</h3>
-            <div class="py-4 space-y-0">
-              <!-- Message inputs -->
-              <template x-for="(message, index) in messages" :key="index">
-                <div class="flex items-start gap-2">
-                  <div class="relative flex-1">
-                    <div
-                      class="absolute left-0 top-0 bottom-0 bg-base-200 rounded-l-lg flex items-center border-r border-base-300 h-[42px]"
-                    >
-                      <select
-                        class="select select-sm bg-base-200 border-none focus:outline-none h-full"
-                        x-model="message.role"
-                      >
-                        <option>USER</option>
-                        <option>AGENT</option>
-                        <option>TOOL</option>
-                      </select>
-                    </div>
-                    <div
-                      class="w-full"
-                      x-data="{ resize() { $el.querySelector('textarea').style.height = '42px'; $el.querySelector('textarea').style.height = $el.querySelector('textarea').scrollHeight + 'px' } }"
-                      x-init="resize()"
-                      @input="resize()"
-                    >
-                      <textarea
-                        class="textarea textarea-bordered w-full pl-24 min-h-[42px] overflow-hidden"
-                        x-model="message.content"
-                        placeholder="Enter message content..."
-                        style="resize: none"
-                      ></textarea>
+                      <h2 class="text-2xl font-semibold mt-8 mb-4">Key Responsibilities</h2>
+                      <ul class="space-y-2">
+                        <li>Answer questions about Hebo's features and capabilities</li>
+                        <li>Guide users through common troubleshooting steps</li>
+                        <li>Assist with subscription and billing inquiries</li>
+                        <li>Provide clear, accurate information about pricing plans</li>
+                        <li>Maintain a professional and helpful tone</li>
+                      </ul>
+
+                      <h2 class="text-2xl font-semibold mt-8 mb-4">Guidelines</h2>
+                      <ul class="space-y-2">
+                        <li>Stay within the scope of documented features</li>
+                        <li>Escalate complex technical issues to human support</li>
+                        <li>Protect user privacy and sensitive information</li>
+                        <li>Be transparent about AI limitations</li>
+                      </ul>
                     </div>
                   </div>
-                  <button
-                    type="button"
-                    class="btn btn-ghost btn-sm"
-                    @click="messages.splice(index, 1)"
-                    x-show="messages.length > 1"
+                </div>
+
+                <!-- Slash Command Menu -->
+                <div
+                  x-show="slashMenu.show"
+                  x-transition
+                  :style="`position: absolute; left: ${slashMenu.x}px; top: ${slashMenu.y}px;`"
+                  class="bg-white rounded-lg shadow-lg border border-base-200 w-64 py-2 z-50"
+                  @click.outside="slashMenu.show = false"
+                >
+                  <div class="px-2 py-1 text-sm text-base-content/70">Insert...</div>
+                  
+                  <button 
+                    class="w-full px-3 py-2 hover:bg-base-100 flex items-center gap-2 text-left"
+                    @click="
+                      document.execCommand('insertHTML', false, '<h2 class=\'text-2xl font-semibold mt-8 mb-4\'>New Scenario</h2><p>Describe your scenario here...</p>');
+                      slashMenu.show = false;
+                    "
                   >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      class="h-4 w-4"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        d="M6 18L18 6M6 6l12 12"
-                      />
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0112 15a9.065 9.065 0 00-6.23-.693L5 14.5m14.8.8l1.402 1.402c1.232 1.232.65 3.318-1.067 3.611A48.309 48.309 0 0112 21c-2.773 0-5.491-.235-8.135-.687-1.718-.293-2.3-2.379-1.067-3.61L5 14.5" />
                     </svg>
+                    Scenario
+                  </button>
+
+                  <button 
+                    class="w-full px-3 py-2 hover:bg-base-100 flex items-center gap-2 text-left"
+                    @click="
+                      document.execCommand('insertHTML', false, '<div class=\'card bg-base-200 my-4\'><div class=\'card-body\'><h3 class=\'card-title text-sm\'>New Example</h3><div class=\'space-y-2 text-sm\'><p><strong>User:</strong> </p><p><strong>Assistant:</strong> </p></div></div></div>');
+                      slashMenu.show = false;
+                    "
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 01.865-.501 48.172 48.172 0 003.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z" />
+                    </svg>
+                    Example
+                  </button>
+
+                  <button 
+                    class="w-full px-3 py-2 hover:bg-base-100 flex items-center gap-2 text-left"
+                    @click="
+                      const input = document.createElement('input');
+                      input.type = 'file';
+                      input.accept = '.md,.txt';
+                      input.onchange = (e) => {
+                        const file = e.target.files[0];
+                        const reader = new FileReader();
+                        reader.onload = (e) => {
+                          document.execCommand('insertText', false, e.target.result);
+                        };
+                        reader.readAsText(file);
+                      };
+                      input.click();
+                      slashMenu.show = false;
+                    "
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m6.75 12l-3-3m0 0l-3 3m3-3v6m-1.5-15H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+                    </svg>
+                    Import from file
                   </button>
                 </div>
-              </template>
+              </div>
 
-              <!-- Add message button -->
-              <button
-                type="button"
-                class="btn btn-ghost btn-sm mt-2"
-                @click="messages.push({role: 'AGENT', content: ''})"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="h-4 w-4 mr-2"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    d="M12 4.5v15m7.5-7.5h-15"
-                  />
-                </svg>
-              </button>
-            </div>
-            <div class="modal-action">
-              <button class="btn" @click="showExampleModal = false">
-                Cancel
-              </button>
-              <button
-                class="btn btn-primary"
-                @click="examples.push({messages: [...messages]}); messages = [{role: 'USER', content: ''}]; showExampleModal = false"
-              >
-                Add
-              </button>
-            </div>
-          </div>
-          <form method="dialog" class="modal-backdrop">
-            <button @click="showExampleModal = false">close</button>
-          </form>
-        </dialog>
+              <!-- Formatting content -->
+              <div x-show="currentSection === 'formatting'" class="max-w-3xl mx-auto py-20 px-12">
+                <div class="prose max-w-none">
+                  <div contenteditable="true" class="outline-none">
+                    <h1 class="text-4xl font-bold mb-8">Formatting Guidelines</h1>
+                    <div class="text-lg text-base-content/80 leading-relaxed">
+                      <h2 class="text-2xl font-semibold mt-8 mb-4">Markdown Structure</h2>
+                      <ul class="space-y-2">
+                        <li>Headers: Use # for main points</li>
+                        <li>Lists: Use - for bullet points</li>
+                        <li>Code: Use ``` for code blocks</li>
+                      </ul>
 
-        <!-- Update the version modal -->
-        <dialog class="modal" :class="{ 'modal-open': showVersionModal }">
-          <div class="modal-box max-w-[300px]">
-            <h3 class="font-bold text-lg mb-4">Select Version</h3>
-            <table class="table table-compact w-full">
-              <tbody>
-                <template
-                  x-for="version in ['v1', 'v2', 'v3', 'v4']"
-                  :key="version"
-                >
-                  <tr class="hover">
-                    <td class="flex items-center justify-between py-1">
-                      <div class="flex items-center gap-2">
-                        <span x-text="version"></span>
+                      <h2 class="text-2xl font-semibold mt-8 mb-4">Response Structure</h2>
+                      <ul class="space-y-2">
+                        <li>Start with a clear, direct answer</li>
+                        <li>Follow with supporting details</li>
+                        <li>End with next steps or related information</li>
+                      </ul>
+
+                      <h2 class="text-2xl font-semibold mt-8 mb-4">Special Formatting</h2>
+                      <ul class="space-y-2">
+                        <li>Use <strong>bold</strong> for emphasis</li>
+                        <li>Use <code>code</code> for technical terms</li>
+                        <li>Use blockquotes for important notes</li>
+                      </ul>
+
+                      <h2 class="text-2xl font-semibold mt-8 mb-4">Length and Clarity</h2>
+                      <ul class="space-y-2">
+                        <li>Keep paragraphs short (3-4 lines)</li>
+                        <li>Use lists for multiple points</li>
+                        <li>Include examples when helpful</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Scenario 1 content -->
+              <div x-show="currentSection === 'scenario1'" class="max-w-3xl mx-auto py-20 px-12">
+                <div class="prose max-w-none">
+                  <div contenteditable="true" class="outline-none">
+                    <h1 class="text-4xl font-bold mb-8">Subscription Support Scenario</h1>
+                    <div class="text-lg text-base-content/80 leading-relaxed">
+                      <p class="mb-6">
+                        When handling subscription-related inquiries, follow this structured approach to ensure consistent and effective support.
+                      </p>
+
+                      <h2 class="text-2xl font-semibold mt-8 mb-4">1. Initial Response</h2>
+                      <ul class="space-y-2">
+                        <li>Greet the user professionally</li>
+                        <li>Acknowledge their subscription concern</li>
+                        <li>Ask for relevant account details</li>
+                      </ul>
+
+                      <h2 class="text-2xl font-semibold mt-8 mb-4">2. Verification Steps</h2>
+                      <ul class="space-y-2">
+                        <li>Confirm email address</li>
+                        <li>Verify subscription status</li>
+                        <li>Check billing history if relevant</li>
+                      </ul>
+
+                      <h2 class="text-2xl font-semibold mt-8 mb-4">3. Common Solutions</h2>
+                      <ul class="space-y-2">
+                        <li>Guide through plan upgrades/downgrades</li>
+                        <li>Explain billing cycles</li>
+                        <li>Resolve payment issues</li>
+                        <li>Process refunds when applicable</li>
+                      </ul>
+
+                      <h2 class="text-2xl font-semibold mt-8 mb-4">4. Escalation Criteria</h2>
+                      <ul class="space-y-2">
+                        <li>Complex billing disputes</li>
+                        <li>Technical subscription errors</li>
+                        <li>Special discount requests</li>
+                        <li>Enterprise plan inquiries</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Examples content -->
+              <div x-show="currentSection === 'examples'" class="max-w-3xl mx-auto py-20 px-12">
+                <div class="prose max-w-none">
+                  <div contenteditable="true" class="outline-none">
+                    <h1 class="text-4xl font-bold mb-8">Conversation Examples</h1>
+                    
+                    <div class="text-lg text-base-content/80 leading-relaxed">
+                      <p class="mb-6">
+                        Reference examples of common support scenarios and their ideal responses. Use these to maintain consistency in tone and problem-solving approach.
+                      </p>
+
+                      <h2 class="text-2xl font-semibold mt-8 mb-4">Plan Upgrade Inquiry</h2>
+                      <div class="pl-4 border-l-4 border-base-200 mb-8">
+                        <div class="badge badge-neutral mb-2">USER</div>
+                        <p class="mb-4">How do I upgrade to the Professional plan?</p>
+                        <div class="badge badge-primary mb-2">ASSISTANT</div>
+                        <p>I'll help you upgrade your plan. Could you please confirm your account email first? Once verified, I can guide you through the upgrade process step by step.</p>
                       </div>
-                      <button class="btn btn-ghost btn-xs">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          class="h-4 w-4"
-                          viewBox="0 0 24 24"
-                          :fill="version === 'v2' ? 'rgb(34 197 94)' : 'none'"
-                          :stroke="version === 'v2' ? 'rgb(34 197 94)' : 'currentColor'"
-                          stroke-width="2"
-                        >
-                          <circle cx="12" cy="12" r="9" />
+
+                      <h2 class="text-2xl font-semibold mt-8 mb-4">Technical Support with Tool Usage</h2>
+                      <div class="pl-4 border-l-4 border-base-200 mb-8">
+                        <div class="badge badge-neutral mb-2">USER</div>
+                        <p class="mb-4">What's my current API usage for this month?</p>
+                        <div class="badge badge-accent mb-2">TOOL</div>
+                        <p class="mb-4 text-base-content/70">Querying API usage metrics for current billing period...</p>
+                        <div class="badge badge-primary mb-2">ASSISTANT</div>
+                        <p>Based on the usage data, you've made 45,230 API calls this month, which is about 60% of your monthly quota of 75,000 calls. At your current usage rate, you should be well within your limit for this billing cycle. Would you like me to show you a breakdown by endpoint or help you set up usage alerts?</p>
+                      </div>
+
+                      <h2 class="text-2xl font-semibold mt-8 mb-4">Billing Support</h2>
+                      <div class="pl-4 border-l-4 border-base-200 mb-8">
+                        <div class="badge badge-neutral mb-2">USER</div>
+                        <p class="mb-4">I was charged twice this month</p>
+                        <div class="badge badge-primary mb-2">ASSISTANT</div>
+                        <p>I apologize for any billing concerns. Let me help you investigate this right away. Could you please provide your account email address? I'll check your billing history to verify the charges and help resolve any duplicate payments.</p>
+                      </div>
+
+                      <h2 class="text-2xl font-semibold mt-8 mb-4">Feature Request</h2>
+                      <div class="pl-4 border-l-4 border-base-200 mb-8">
+                        <div class="badge badge-neutral mb-2">USER</div>
+                        <p class="mb-4">Do you support integration with Salesforce?</p>
+                        <div class="badge badge-primary mb-2">ASSISTANT</div>
+                        <p>Currently, we don't have a direct Salesforce integration, but it's a frequently requested feature that's on our roadmap. In the meantime, you can use our REST API or Zapier integration to connect Hebo with Salesforce. Would you like me to explain these alternative solutions?</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Settings content -->
+              <div x-show="currentSection === 'settings'" class="max-w-3xl mx-auto py-20 px-12">
+                <div class="prose max-w-none">
+                  <div contenteditable="true" class="outline-none space-y-6">
+                    <h1 class="text-4xl font-bold mb-8">Agent Configuration</h1>
+
+                    <!-- Core LLM -->
+                    <div class="form-control">
+                      <label class="label">
+                        <span class="label-text font-bold">Core LLM</span>
+                      </label>
+                      <select class="select select-bordered w-full">
+                        <option>GPT-4o</option>
+                        <option>GPT-4o mini</option>
+                        <option>o1-preview</option>
+                        <option>o1-mini</option>
+                        <option>claude-3-5-sonnet</option>
+                        <option>claude-3-5-haiku</option>
+                      </select>
+                      <label class="label">
+                        <span class="label-text-alt">
+                          <strong>Choose the AI model that powers your answers and actions.</strong>
+                          <br/>
+                          This model will be the brain behind generating answers and deciding whether to use additional tools based on the context. Pick a model based on your needs: higher-performing models like GPT-4o are best for complex tasks, while lighter models like GPT-4o mini are faster and more cost-efficient.
+                        </span>
+                      </label>
+                    </div>
+
+                    <!-- Advanced Settings Accordion -->
+                    <div class="collapse collapse-arrow bg-base-200">
+                      <input type="checkbox" /> 
+                      <div class="collapse-title text-xl font-medium">
+                        Advanced
+                      </div>
+                      <div class="collapse-content space-y-6">
+                        <!-- Condense LLM -->
+                        <div class="form-control">
+                          <label class="label">
+                            <span class="label-text font-bold">Condense LLM</span>
+                          </label>
+                          <select class="select select-bordered w-full">
+                            <option>GPT-4o</option>
+                            <option>GPT-4o mini</option>
+                            <option>o1-preview</option>
+                            <option>o1-mini</option>
+                            <option>claude-3-5-sonnet</option>
+                            <option>claude-3-5-haiku</option>
+                          </select>
+                          <label class="label">
+                            <span class="label-text-alt">
+                              <strong>Select the model to condense conversations and craft retrieval queries.</strong>
+                              <br/>
+                              This model simplifies ongoing conversations into concise, context-rich questions that guide the retrieval process. Choose a model based on the complexity and performance you need: advanced models handle nuanced contexts better, while lighter models are faster and more efficient.
+                            </span>
+                          </label>
+                        </div>
+
+                        <!-- Embeddings -->
+                        <div class="form-control">
+                          <label class="label">
+                            <span class="label-text font-bold">Embeddings</span>
+                          </label>
+                          <select class="select select-bordered w-full">
+                            <option>text-embedding-ada-002</option>
+                            <option>all-MiniLM-L6-v2</option>
+                            <option>embed-english-v2.0</option>
+                            <option>distilbert-base-uncased</option>
+                          </select>
+                          <label class="label">
+                            <span class="label-text-alt">
+                              <strong>Select the embedding model to convert text into numerical vectors for retrieval.</strong>
+                              <br/>
+                              This model transforms text into numerical vectors, capturing semantic meaning for effective information retrieval. Choose a model that aligns with your performance and accuracy requirements.
+                              <br/><br/>
+                              ⚠️ Changing the embedding model will require the knowledge index to be recreated. This process may take some time depending on the size of your dataset.
+                            </span>
+                          </label>
+                        </div>
+
+                        <!-- Tools Section -->
+                        <div class="form-control">
+                          <label class="label">
+                            <span class="label-text font-bold">Tools</span>
+                          </label>
+                          
+                          <!-- Tool list with Add button -->
+                          <div class="space-y-6">
+                            <!-- Add tool button -->
+                            <button type="button"
+                                    class="btn btn-outline btn-primary btn-sm"
+                                    @click="showToolModal = true">
+                              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                              </svg>
+                              Add Tool
+                            </button>
+
+                            <!-- Tool list -->
+                            <div class="space-y-6">
+                              <template x-for="(tool, index) in tools">
+                                <div class="card bg-base-200 shadow-sm border border-base-300">
+                                  <!-- Same tool card content as in agent.html -->
+                                </div>
+                              </template>
+                            </div>
+                          </div>
+                        </div>
+
+                        <!-- Switches -->
+                        <div class="space-y-4">
+                          <!-- Artificial Delay Switch -->
+                          <div class="form-control">
+                            <label class="label cursor-pointer">
+                              <span class="label-text">
+                                <div class="font-medium">Add artificial delay</div>
+                                <div class="text-sm text-base-content/70">
+                                  Enable this option to add a natural typing delay to your agent's responses, creating a more human-like interaction experience.
+                                </div>
+                              </span>
+                              <input type="checkbox" class="toggle toggle-primary" />
+                            </label>
+                          </div>
+
+                          <!-- Hide Tool Usage Switch -->
+                          <div class="form-control">
+                            <label class="label cursor-pointer">
+                              <span class="label-text">
+                                <div class="font-medium">Hide tool usage messages</div>
+                                <div class="text-sm text-base-content/70">
+                                  Enable this option to hide the default tool usage announcements, making conversations feel more natural by removing repetitive notifications when tools are being used.
+                                </div>
+                              </span>
+                              <input type="checkbox" class="toggle toggle-primary" />
+                            </label>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <h2 class="text-2xl font-semibold mt-8">Share Agent</h2>
+                    <div class="form-control">
+                        <div class="join w-full">
+                            <input type="text" 
+                                   class="input input-bordered join-item flex-1 font-mono bg-base-200"
+                                   value="https://hebo.ai/chat/gato-v2"
+                                   readonly />
+                            <button class="btn join-item"
+                                    @click="navigator.clipboard.writeText('https://hebo.ai/chat/gato-v2')">
+                                Copy
+                            </button>
+                        </div>
+                        <label class="label">
+                            <span class="label-text-alt text-base-content/70">
+                                Share this link to let others interact with your agent. They won't need an account to try it.
+                            </span>
+                        </label>
+                    </div>
+
+                    <h2 class="text-2xl font-semibold mt-8">API Integration</h2>
+                    
+                    <!-- API Key Generation -->
+                    <div class="form-control">
+                      <div class="join w-full">
+                        <input type="text" 
+                               placeholder="Enter key name" 
+                               class="input input-bordered join-item flex-1"
+                               x-model="newKeyName" />
+                        <button class="btn btn-primary join-item"
+                                @click="generatedKey = {
+                                    name: newKeyName,
+                                    key: 'sk-' + Array(32).fill().map(() => Math.random().toString(36)[2]).join(''),
+                                    created: new Date().toISOString().split('T')[0]
+                                }; newKeyName = ''">
+                          Generate API Key
+                        </button>
+                      </div>
+                    </div>
+
+                    <!-- Generated Key Display -->
+                    <div class="mt-6" x-show="generatedKey">
+                      <div class="alert alert-success">
+                        <span>New API key generated for: <strong x-text="generatedKey?.name"></strong></span>
+                      </div>
+                      <div class="mt-4">
+                        <div class="join w-full">
+                          <input :type="showKey ? 'text' : 'password'"
+                                 class="input input-bordered join-item flex-1 font-mono"
+                                 :value="generatedKey?.key"
+                                 readonly />
+                          <button class="btn join-item"
+                                  @click="showKey = !showKey"
+                                  x-text="showKey ? 'Hide' : 'Show'">
+                          </button>
+                          <button class="btn join-item"
+                                  @click="navigator.clipboard.writeText(generatedKey?.key)">
+                            Copy
+                          </button>
+                        </div>
+                        <div class="text-sm text-warning mt-2">
+                          Make sure to copy your API key now. You won't be able to see it again!
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Code Examples -->
+                    <div class="mt-8">
+                      <h3 class="text-xl font-semibold mb-4">Code Examples</h3>
+                      <div class="tabs tabs-boxed">
+                        <a class="tab" 
+                           :class="{ 'tab-active': selectedLang === 'curl' }"
+                           @click="selectedLang = 'curl'">cURL</a>
+                        <a class="tab" 
+                           :class="{ 'tab-active': selectedLang === 'node' }"
+                           @click="selectedLang = 'node'">Node.js</a>
+                        <a class="tab" 
+                           :class="{ 'tab-active': selectedLang === 'python' }"
+                           @click="selectedLang = 'python'">Python</a>
+                      </div>
+
+                      <!-- cURL Example -->
+                      <div class="mockup-code mt-4" x-show="selectedLang === 'curl'" style="background-color: #1a1a1a;">
+                        <pre><code>curl -X POST https://api.hebo.ai/v1/chat \
+  -H "Authorization: Bearer ${API_KEY}" \
+  -H "Content-Type: application/json" \
+  -d '{"message": "Hello!"}'</code></pre>
+                      </div>
+
+                      <!-- Node.js Example -->
+                      <div class="mockup-code mt-4" x-show="selectedLang === 'node'" style="background-color: #1a1a1a;">
+                        <pre><code>const axios = require('axios');
+
+const response = await axios.post('https://api.hebo.ai/v1/chat', {
+    message: 'Hello!'
+}, {
+    headers: {
+        'Authorization': `Bearer ${API_KEY}`,
+        'Content-Type': 'application/json'
+    }
+});</code></pre>
+                      </div>
+
+                      <!-- Python Example -->
+                      <div class="mockup-code mt-4" x-show="selectedLang === 'python'" style="background-color: #1a1a1a;">
+                        <pre><code>import requests
+
+response = requests.post(
+    'https://api.hebo.ai/v1/chat',
+    json={'message': 'Hello!'},
+    headers={
+        'Authorization': f'Bearer {API_KEY}',
+        'Content-Type': 'application/json'
+    }
+)</code></pre>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right chat pane -->
+            <div class="w-2/5 border-l flex flex-col">
+              <!-- Chat messages area - scrollable -->
+              <div class="flex-1 overflow-y-auto">
+                <div class="min-h-full flex flex-col justify-end">
+                  <div class="px-6 space-y-4 pb-4">
+                    <!-- Example messages -->
+                    <div class="chat chat-end">
+                      <div class="max-w-[80%] bg-base-200 rounded-lg px-4 py-3">
+                        How can I add new entries to the knowledge base?
+                      </div>
+                    </div>
+                    <div class="chat chat-start">
+                      <div class="w-[calc(100%-4rem)] rounded-lg p-3">
+                        You can add new entries by clicking the "New Page" button in the workspace sidebar. This will create a new page where you can add your content using markdown formatting.
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Chat input area - fixed at bottom -->
+              <div class="flex-none">
+                <div class="p-4 bg-base-100">
+                  <div class="relative">
+                    <textarea class="textarea w-full min-h-[4.5rem] bg-base-200 pr-12 border-none" 
+                      placeholder="Type your message here..." rows="2"></textarea>
+                    <div class="absolute bottom-2 left-2">
+                      <button class="btn btn-ghost btn-sm">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
                         </svg>
                       </button>
-                    </td>
-                  </tr>
-                </template>
-              </tbody>
-            </table>
-            <div class="modal-action">
-              <button class="btn btn-sm" @click="showVersionModal = false">
-                Close
-              </button>
+                    </div>
+                    <div class="absolute bottom-2 right-2">
+                      <button class="btn btn-ghost btn-sm">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Status footer -->
+                <div class="px-4 py-2 bg-base-100 text-xs text-base-content/70 flex items-center justify-center gap-2">
+                  <div class="w-2 h-2 rounded-full bg-success"></div>
+                  The agent is using the last version of Knowledge
+                </div>
+              </div>
             </div>
           </div>
-          <form method="dialog" class="modal-backdrop">
-            <button @click="showVersionModal = false">close</button>
-          </form>
-        </dialog>
+        </div>
       </div>
     </div>
   </body>

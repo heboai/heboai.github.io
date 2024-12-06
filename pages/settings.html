@@ -8,8 +8,7 @@
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
 <body class="min-h-screen bg-base-100" x-data="{ 
-    sidebarOpen: true,
-    activeTab: 'api',
+    activeTab: 'general',
     apiKey: 'sk-xxxx-xxxx-xxxx-xxxx',
     showApiKey: false,
     projects: [
@@ -17,399 +16,319 @@
         { id: 2, name: 'Sales Assistant', description: 'AI-powered sales automation tool' }
     ]
 }">
-    <div class="drawer lg:drawer-open">
-        <!-- Sidebar -->
-        <input id="sidebar" type="checkbox" class="drawer-toggle" x-model="sidebarOpen" />
-        <div class="drawer-side">
-            <label for="sidebar" class="drawer-overlay"></label>
-            <aside class="bg-base-200 min-h-screen transition-all duration-300 flex flex-col" 
-                  :class="{ 'collapsed': !sidebarOpen }">
-                
-                <!-- Logo section with toggle button - make it thinner -->
-                <div class="h-12 flex items-center justify-between px-4">
-                    <svg xmlns="http://www.w3.org/2000/svg" 
-                         class="h-4 w-4" 
-                         viewBox="0 0 24 24" 
-                         fill="none" 
-                         stroke="currentColor" 
-                         stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 3v1.5M4.5 8.25H3m18 0h-1.5M4.5 12H3m18 0h-1.5m-15 3.75H3m18 0h-1.5M8.25 19.5V21M12 3v1.5m0 15V21m3.75-18v1.5m0 15V21m-9-1.5h10.5a2.25 2.25 0 002.25-2.25V6.75a2.25 2.25 0 00-2.25-2.25H6.75A2.25 2.25 0 004.5 6.75v10.5a2.25 2.25 0 002.25 2.25zm.75-12h9v9h-9v-9z" />
-                    </svg>
-                    <!-- Add toggle button -->
-                    <button class="btn btn-sm btn-ghost" @click="sidebarOpen = !sidebarOpen">
-                        <svg xmlns="http://www.w3.org/2000/svg" 
-                             class="h-4 w-4" 
-                             :class="{ 'rotate-180': !sidebarOpen }"
-                             viewBox="0 0 24 24" 
-                             fill="none" 
-                             stroke="currentColor" 
-                             stroke-width="2">
-                            <path stroke-linecap="round" 
-                                  stroke-linejoin="round" 
-                                  d="M18.75 19.5l-7.5-7.5 7.5-7.5m-6 15L5.25 12l7.5-7.5" />
+    <div class="flex flex-col min-h-screen">
+        <!-- Top Navigation -->
+        <nav class="bg-base-200 border-b">
+            <div class="flex items-center justify-between h-16 px-6">
+                <!-- Logo section -->
+                <a href="#" class="text-primary hover:text-primary-focus inline-flex items-center gap-1">
+                    <span class="font-medium"></span>
+                </a>
+
+                <!-- Main navigation -->
+                <div class="flex items-center gap-2">
+                    <a href="home.html" class="btn btn-sm btn-ghost">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
                         </svg>
-                    </button>
+                        <span class="ml-1">Dashboard</span>
+                    </a>
+                    <a href="knowledge-base.html" class="btn btn-sm btn-ghost">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
+                        </svg>
+                        <span class="ml-1">Knowledge Base</span>
+                    </a>
+                    <a href="evaluation.html" class="btn btn-sm btn-ghost">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0112 15a9.065 9.065 0 00-6.23-.693L5 14.5m14.8.8l1.402 1.402c1.232 1.232.65 3.318-1.067 3.611A48.309 48.309 0 0112 21c-2.773 0-5.491-.235-8.135-.687-1.718-.293-2.3-2.379-1.067-3.61L5 14.5" />
+                        </svg>
+                        <span class="ml-1">Evaluation</span>
+                    </a>
+                    <a href="conversations.html" class="btn btn-sm btn-ghost">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 01.865-.501 48.172 48.172 0 003.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z" />
+                        </svg>
+                        <span class="ml-1">Conversations</span>
+                    </a>
                 </div>
 
-                <!-- Main menu - without settings -->
-                <ul class="menu menu-vertical px-2 py-2 gap-1">
-                    <li>
-                        <a href="home.html" class="flex items-center h-8 transition-all duration-300 hover:bg-base-300 mx-2"
-                           :class="{'justify-center rounded-lg': !sidebarOpen, 'rounded-xl': sidebarOpen}">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
-                            </svg>
-                            <span class="ml-3 transition-all duration-300" 
-                                  :class="{'opacity-0 w-0': !sidebarOpen, 'opacity-100': sidebarOpen}">Home</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="agent.html" class="flex items-center h-8 transition-all duration-300 hover:bg-base-300 mx-2"
-                           :class="{'justify-center rounded-lg': !sidebarOpen, 'rounded-xl': sidebarOpen}">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 3v1.5M4.5 8.25H3m18 0h-1.5M4.5 12H3m18 0h-1.5m-15 3.75H3m18 0h-1.5M8.25 19.5V21M12 3v1.5m0 15V21m3.75-18v1.5m0 15V21m-9-1.5h10.5a2.25 2.25 0 002.25-2.25V6.75a2.25 2.25 0 00-2.25-2.25H6.75A2.25 2.25 0 004.5 6.75v10.5a2.25 2.25 0 002.25 2.25zm.75-12h9v9h-9v-9z" />
-                            </svg>
-                            <span class="ml-3 transition-all duration-300" 
-                                  :class="{'opacity-0 w-0': !sidebarOpen, 'opacity-100': sidebarOpen}">Agent</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="knowledge-base.html" class="flex items-center h-8 transition-all duration-300 hover:bg-base-300 mx-2"
-                           :class="{'justify-center rounded-lg': !sidebarOpen, 'rounded-xl': sidebarOpen}">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
-                            </svg>
-                            <span class="ml-3 transition-all duration-300" 
-                                  :class="{'opacity-0 w-0': !sidebarOpen, 'opacity-100': sidebarOpen}">Knowledge Base</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="evaluation.html" class="flex items-center h-8 transition-all duration-300 hover:bg-base-300 mx-2"
-                           :class="{'justify-center rounded-lg': !sidebarOpen, 'rounded-xl': sidebarOpen}">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0112 15a9.065 9.065 0 00-6.23-.693L5 14.5m14.8.8l1.402 1.402c1.232 1.232.65 3.318-1.067 3.611A48.309 48.309 0 0112 21c-2.773 0-5.491-.235-8.135-.687-1.718-.293-2.3-2.379-1.067-3.61L5 14.5" />
-                            </svg>
-                            <span class="ml-3 transition-all duration-300" 
-                                  :class="{'opacity-0 w-0': !sidebarOpen, 'opacity-100': sidebarOpen}">Evaluation</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="conversations.html" class="flex items-center h-8 transition-all duration-300 hover:bg-base-300 mx-2"
-                           :class="{'justify-center rounded-lg': !sidebarOpen, 'rounded-xl': sidebarOpen}">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 01.865-.501 48.172 48.172 0 003.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z" />
-                            </svg>
-                            <span class="ml-3 transition-all duration-300" 
-                                  :class="{'opacity-0 w-0': !sidebarOpen, 'opacity-100': sidebarOpen}">Conversations</span>
-                        </a>
-                    </li>
-                </ul>
-
-                <!-- Spacer to push settings and user to bottom -->
-                <div class="flex-1"></div>
-
-                <!-- Settings menu -->
-                <ul class="menu menu-vertical px-2 py-2 gap-1 border-t border-base-300">
-                    <li>
-                        <a href="settings.html" class="flex items-center h-8 transition-all duration-300 hover:bg-base-300 bg-primary text-primary-content mx-2"
-                           :class="{'justify-center rounded-lg': !sidebarOpen, 'rounded-xl': sidebarOpen}">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.24-.438.613-.431.992a6.759 6.759 0 010 .255c-.007.378.138.75.43.99l1.005.828c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 010-.255c.007-.378-.138-.75-.43-.99l-1.004-.828a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281z" />
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                            </svg>
-                            <span class="ml-3 transition-all duration-300" 
-                                  :class="{'opacity-0 w-0': !sidebarOpen, 'opacity-100': sidebarOpen}">Organization Settings</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a class="flex items-center h-8 transition-all duration-300 hover:bg-base-300 mx-2 cursor-pointer"
-                           :class="{'justify-center rounded-lg': !sidebarOpen, 'rounded-xl': sidebarOpen}"
-                           onclick="document.getElementById('user-dropdown').classList.toggle('hidden')">
+                <!-- Settings and user section -->
+                <div class="flex items-center gap-2">
+                    <a href="settings.html" class="btn btn-sm btn-primary">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.24-.438.613-.431.992a6.759 6.759 0 010 .255c-.007.378.138.75.43.99l1.005.828c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 010-.255c.007-.378-.138-.75-.43-.99l-1.004-.828a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                        <span class="ml-1">Settings</span>
+                    </a>
+                    <div class="dropdown dropdown-end">
+                        <button class="btn btn-sm btn-ghost" onclick="document.getElementById('user-dropdown').classList.toggle('hidden')">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z" />
                             </svg>
-                            <span class="ml-3 transition-all duration-300" 
-                                  :class="{'opacity-0 w-0': !sidebarOpen, 'opacity-100': sidebarOpen}">Heinrich</span>
-                        </a>
-                        <ul id="user-dropdown" class="menu dropdown-content hidden ml-4 mt-1 p-2 shadow bg-base-100 rounded-box w-52">
+                            <span class="ml-1">Heinrich</span>
+                        </button>
+                        <ul id="user-dropdown" class="hidden dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52 mt-2">
                             <li><a>Profile</a></li>
                             <li><a href="../index.html">Logout</a></li>
                         </ul>
-                    </li>
-                </ul>
-            </aside>
-        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
 
         <!-- Main content -->
-        <div class="drawer-content flex flex-col">
-            <!-- Top navigation -->
-            <div class="h-12 flex items-center px-6 bg-base-100 border-b">
-                <h2 class="text-lg font-semibold">Organization Settings</h2>
-            </div>
+        <main class="p-6">
+            <!-- Add a centered container with max-width -->
+            <div class="max-w-3xl mx-auto w-full">
+                <!-- Settings Tabs -->
+                <div class="tabs tabs-boxed mb-6">
+                    <a class="tab h-8 min-h-[2rem]" 
+                       :class="{ 'tab-active': activeTab === 'general' }" 
+                       @click="activeTab = 'general'">General</a>
+                    <a class="tab h-8 min-h-[2rem]" 
+                       :class="{ 'tab-active': activeTab === 'team' }" 
+                       @click="activeTab = 'team'">Team</a>
+                    <a class="tab h-8 min-h-[2rem]" 
+                       :class="{ 'tab-active': activeTab === 'billing' }" 
+                       @click="activeTab = 'billing'">Billing</a>
+                </div>
 
-            <!-- Main content -->
-            <main class="p-6">
-                <!-- Add a centered container with max-width -->
-                <div class="max-w-3xl mx-auto w-full">
-                    <!-- Settings Tabs -->
-                    <div class="tabs tabs-boxed mb-6">
-                        <a class="tab h-8 min-h-[2rem]" 
-                           :class="{ 'tab-active': activeTab === 'general' }" 
-                           @click="activeTab = 'general'">General</a>
-                        <a class="tab h-8 min-h-[2rem]" 
-                           :class="{ 'tab-active': activeTab === 'team' }" 
-                           @click="activeTab = 'team'">Team</a>
-                        <a class="tab h-8 min-h-[2rem]" 
-                           :class="{ 'tab-active': activeTab === 'projects' }" 
-                           @click="activeTab = 'projects'">Projects</a>
-                        <a class="tab h-8 min-h-[2rem]" 
-                           :class="{ 'tab-active': activeTab === 'api' }" 
-                           @click="activeTab = 'api'">API</a>
-                        <a class="tab h-8 min-h-[2rem]" 
-                           :class="{ 'tab-active': activeTab === 'billing' }" 
-                           @click="activeTab = 'billing'">Billing</a>
-                    </div>
-
-                    <!-- General Settings -->
-                    <div x-show="activeTab === 'general'" class="space-y-6">
-                        <div class="card bg-base-100 shadow-xl">
-                            <div class="card-body">
-                                <h3 class="card-title">Organization Settings</h3>
-                                <div class="form-control">
-                                    <label class="label">
-                                        <span class="label-text">Organization Name</span>
-                                    </label>
-                                    <input type="text" class="input input-bordered" value="My Company" />
-                                </div>
-                                <div class="form-control mt-4">
-                                    <label class="label">
-                                        <span class="label-text">Organization ID</span>
-                                    </label>
-                                    <div class="join w-full">
-                                        <input type="text" 
-                                               class="input input-bordered join-item flex-1 bg-base-200 font-mono" 
-                                               value="org_6789abcd1234" 
-                                               readonly />
-                                        <button class="btn join-item" 
-                                                @click="navigator.clipboard.writeText('org_6789abcd1234')">
-                                            <svg xmlns="http://www.w3.org/2000/svg" 
-                                                 class="h-4 w-4" 
-                                                 viewBox="0 0 24 24" 
-                                                 fill="none" 
-                                                 stroke="currentColor" 
-                                                 stroke-width="2">
+                <!-- General Settings -->
+                <div x-show="activeTab === 'general'" class="space-y-6">
+                    <div class="card bg-base-100 shadow-xl">
+                        <div class="card-body">
+                            <h3 class="card-title">Organization Settings</h3>
+                            <div class="form-control mt-4">
+                                <label class="label">
+                                    <span class="label-text">Organization ID</span>
+                                </label>
+                                <div class="join w-full">
+                                    <input type="text" 
+                                           class="input input-bordered join-item flex-1 bg-base-200 font-mono" 
+                                           value="org_6789abcd1234" 
+                                           readonly />
+                                    <button class="btn join-item" 
+                                            @click="navigator.clipboard.writeText('org_6789abcd1234')">
+                                        <svg xmlns="http://www.w3.org/2000/svg" 
+                                             class="h-4 w-4" 
+                                             viewBox="0 0 24 24" 
+                                             fill="none" 
+                                             stroke="currentColor" 
+                                             stroke-width="2">
                                                 <path stroke-linecap="round" 
                                                       stroke-linejoin="round" 
                                                       d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
                                             </svg>
-                                        </button>
-                                    </div>
+                                    </button>
                                 </div>
                             </div>
                         </div>
+                    </div>
 
-                        <!-- Danger Zone Card -->
-                        <div class="card bg-base-100 shadow-xl">
-                            <div class="card-body">
-                                <h3 class="card-title text-error">Danger Zone</h3>
-                                <div class="flex items-start gap-2">
-                                    <svg xmlns="http://www.w3.org/2000/svg" 
-                                         class="h-5 w-5 text-error flex-shrink-0 mt-0.5" 
-                                         viewBox="0 0 24 24" 
-                                         fill="none" 
-                                         stroke="currentColor" 
-                                         stroke-width="2">
-                                        <path stroke-linecap="round" 
-                                              stroke-linejoin="round" 
-                                              d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                    <!-- Danger Zone Card -->
+                    <div class="card bg-base-100 shadow-xl">
+                        <div class="card-body">
+                            <h3 class="card-title text-error">Danger Zone</h3>
+                            <div class="flex items-start gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" 
+                                     class="h-5 w-5 text-error flex-shrink-0 mt-0.5" 
+                                     viewBox="0 0 24 24" 
+                                     fill="none" 
+                                     stroke="currentColor" 
+                                     stroke-width="2">
+                                    <path stroke-linecap="round" 
+                                          stroke-linejoin="round" 
+                                          d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                                </svg>
+                                <p class="text-sm">Once you delete an organization, there is no going back. Please be certain.</p>
+                            </div>
+                            <div class="card-actions justify-end mt-4">
+                                <button class="btn btn-error btn-sm">
+                                    Delete Organization
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Team Settings -->
+                <div x-show="activeTab === 'team'" class="space-y-6">
+                    <div class="card bg-base-100 shadow-xl">
+                        <div class="card-body">
+                            <div class="flex justify-between items-center mb-4">
+                                <h3 class="card-title">Team Members</h3>
+                                <button class="btn btn-primary">Invite Member</button>
+                            </div>
+                            <div class="overflow-x-auto">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Email</th>
+                                            <th>Role</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>John Doe</td>
+                                            <td>john@example.com</td>
+                                            <td>Admin</td>
+                                            <td>
+                                                <button class="btn btn-sm btn-ghost">Edit</button>
+                                                <button class="btn btn-sm btn-ghost text-error">Remove</button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Jane Smith</td>
+                                            <td>jane@example.com</td>
+                                            <td>Editor</td>
+                                            <td>
+                                                <button class="btn btn-sm btn-ghost">Edit</button>
+                                                <button class="btn btn-sm btn-ghost text-error">Remove</button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Projects -->
+                <div x-show="activeTab === 'projects'" class="space-y-6">
+                    <div class="card bg-base-100 shadow-xl">
+                        <div class="card-body">
+                            <div class="flex justify-between items-center mb-4">
+                                <h3 class="card-title">Projects</h3>
+                                <button class="btn btn-primary" @click="document.getElementById('new-project-modal').showModal()">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
                                     </svg>
-                                    <p class="text-sm">Once you delete an organization, there is no going back. Please be certain.</p>
-                                </div>
-                                <div class="card-actions justify-end mt-4">
-                                    <button class="btn btn-error btn-sm">
-                                        Delete Organization
-                                    </button>
-                                </div>
+                                    New Project
+                                </button>
                             </div>
-                        </div>
-                    </div>
 
-                    <!-- Team Settings -->
-                    <div x-show="activeTab === 'team'" class="space-y-6">
-                        <div class="card bg-base-100 shadow-xl">
-                            <div class="card-body">
-                                <div class="flex justify-between items-center mb-4">
-                                    <h3 class="card-title">Team Members</h3>
-                                    <button class="btn btn-primary">Invite Member</button>
-                                </div>
-                                <div class="overflow-x-auto">
-                                    <table class="table">
-                                        <thead>
-                                            <tr>
-                                                <th>Name</th>
-                                                <th>Email</th>
-                                                <th>Role</th>
-                                                <th>Actions</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td>John Doe</td>
-                                                <td>john@example.com</td>
-                                                <td>Admin</td>
-                                                <td>
-                                                    <button class="btn btn-sm btn-ghost">Edit</button>
-                                                    <button class="btn btn-sm btn-ghost text-error">Remove</button>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td>Jane Smith</td>
-                                                <td>jane@example.com</td>
-                                                <td>Editor</td>
-                                                <td>
-                                                    <button class="btn btn-sm btn-ghost">Edit</button>
-                                                    <button class="btn btn-sm btn-ghost text-error">Remove</button>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Projects -->
-                    <div x-show="activeTab === 'projects'" class="space-y-6">
-                        <div class="card bg-base-100 shadow-xl">
-                            <div class="card-body">
-                                <div class="flex justify-between items-center mb-4">
-                                    <h3 class="card-title">Projects</h3>
-                                    <button class="btn btn-primary" @click="document.getElementById('new-project-modal').showModal()">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
-                                        </svg>
-                                        New Project
-                                    </button>
-                                </div>
-
-                                <!-- Projects List -->
-                                <div class="grid gap-4">
-                                    <template x-for="project in projects" :key="project.id">
-                                        <div class="card bg-base-200">
-                                            <div class="card-body p-4">
-                                                <div class="flex justify-between items-start">
-                                                    <div>
-                                                        <h4 class="font-medium" x-text="project.name"></h4>
-                                                        <p class="text-sm text-base-content/70 mt-1" x-text="project.description"></p>
-                                                    </div>
-                                                    <div class="flex gap-2">
-                                                        <button class="btn btn-sm btn-ghost">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                                                <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+                            <!-- Projects List -->
+                            <div class="grid gap-4">
+                                <template x-for="project in projects" :key="project.id">
+                                    <div class="card bg-base-200">
+                                        <div class="card-body p-4">
+                                            <div class="flex justify-between items-start">
+                                                <div>
+                                                    <h4 class="font-medium" x-text="project.name"></h4>
+                                                    <p class="text-sm text-base-content/70 mt-1" x-text="project.description"></p>
+                                                </div>
+                                                <div class="flex gap-2">
+                                                    <button class="btn btn-sm btn-ghost">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+                                                        </svg>
+                                                    </button>
+                                                    <button class="btn btn-sm btn-ghost text-error" 
+                                                            @click="if (confirm('Are you sure you want to delete this project?')) projects = projects.filter(p => p.id !== project.id)">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
                                                             </svg>
-                                                        </button>
-                                                        <button class="btn btn-sm btn-ghost text-error" 
-                                                                @click="if (confirm('Are you sure you want to delete this project?')) projects = projects.filter(p => p.id !== project.id)">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                                                <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
-                                                            </svg>
-                                                        </button>
-                                                    </div>
+                                                    </button>
                                                 </div>
                                             </div>
                                         </div>
-                                    </template>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- API Settings -->
+                <div x-show="activeTab === 'api'" class="space-y-6" x-data="{
+                    newKeyName: '',
+                    generatedKey: null,
+                    showKey: false
+                }">
+                    <div class="card bg-base-100 shadow-xl">
+                        <div class="card-body">
+                            <h3 class="card-title">Integrate with Hebo</h3>
+                            
+                            <!-- API Key Generation Form -->
+                            <div class="form-control mt-4">
+                                <label class="label">
+                                    <span class="label-text">API Key Name</span>
+                                </label>
+                                <div class="join w-full">
+                                    <input type="text" 
+                                           placeholder="Enter key name" 
+                                           class="input input-bordered join-item flex-1"
+                                           x-model="newKeyName" />
+                                    <button class="btn btn-primary join-item"
+                                            @click="generatedKey = {
+                                                name: newKeyName,
+                                                key: 'sk-' + Array(32).fill().map(() => Math.random().toString(36)[2]).join(''),
+                                                created: new Date().toISOString().split('T')[0]
+                                            }; newKeyName = ''">
+                                        Generate API Key
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Generated Key Display -->
+                            <div class="mt-6" x-show="generatedKey">
+                                <div class="alert alert-success">
+                                    <span>New API key generated for: <strong x-text="generatedKey?.name"></strong></span>
+                                </div>
+                                <div class="mt-4">
+                                    <div class="join w-full">
+                                        <input :type="showKey ? 'text' : 'password'"
+                                               class="input input-bordered join-item flex-1 font-mono"
+                                               :value="generatedKey?.key"
+                                               readonly />
+                                        <button class="btn join-item"
+                                                @click="showKey = !showKey"
+                                                x-text="showKey ? 'Hide' : 'Show'">
+                                        </button>
+                                        <button class="btn join-item"
+                                                @click="navigator.clipboard.writeText(generatedKey?.key)">
+                                            Copy
+                                        </button>
+                                    </div>
+                                    <div class="text-sm text-warning mt-2">
+                                        Make sure to copy your API key now. You won't be able to see it again!
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- API Settings -->
-                    <div x-show="activeTab === 'api'" class="space-y-6" x-data="{
-                        newKeyName: '',
-                        generatedKey: null,
-                        showKey: false
-                    }">
-                        <div class="card bg-base-100 shadow-xl">
-                            <div class="card-body">
-                                <h3 class="card-title">Integrate with Hebo</h3>
-                                
-                                <!-- API Key Generation Form -->
-                                <div class="form-control mt-4">
-                                    <label class="label">
-                                        <span class="label-text">API Key Name</span>
-                                    </label>
-                                    <div class="join w-full">
-                                        <input type="text" 
-                                               placeholder="Enter key name" 
-                                               class="input input-bordered join-item flex-1"
-                                               x-model="newKeyName" />
-                                        <button class="btn btn-primary join-item"
-                                                @click="generatedKey = {
-                                                    name: newKeyName,
-                                                    key: 'sk-' + Array(32).fill().map(() => Math.random().toString(36)[2]).join(''),
-                                                    created: new Date().toISOString().split('T')[0]
-                                                }; newKeyName = ''">
-                                            Generate API Key
-                                        </button>
-                                    </div>
-                                </div>
-
-                                <!-- Generated Key Display -->
-                                <div class="mt-6" x-show="generatedKey">
-                                    <div class="alert alert-success">
-                                        <span>New API key generated for: <strong x-text="generatedKey?.name"></strong></span>
-                                    </div>
-                                    <div class="mt-4">
-                                        <div class="join w-full">
-                                            <input :type="showKey ? 'text' : 'password'"
-                                                   class="input input-bordered join-item flex-1 font-mono"
-                                                   :value="generatedKey?.key"
-                                                   readonly />
-                                            <button class="btn join-item"
-                                                    @click="showKey = !showKey"
-                                                    x-text="showKey ? 'Hide' : 'Show'">
-                                            </button>
-                                            <button class="btn join-item"
-                                                    @click="navigator.clipboard.writeText(generatedKey?.key)">
-                                                Copy
-                                            </button>
-                                        </div>
-                                        <div class="text-sm text-warning mt-2">
-                                            Make sure to copy your API key now. You won't be able to see it again!
-                                        </div>
-                                    </div>
+                    <div class="card bg-base-100 shadow-xl" x-data="{ selectedLang: 'curl' }">
+                        <div class="card-body">
+                            <div class="flex">
+                                <div class="tabs tabs-boxed">
+                                    <a class="tab" 
+                                       :class="{ 'tab-active': selectedLang === 'curl' }"
+                                       @click="selectedLang = 'curl'">cURL</a>
+                                    <a class="tab" 
+                                       :class="{ 'tab-active': selectedLang === 'node' }"
+                                       @click="selectedLang = 'node'">Node.js</a>
+                                    <a class="tab" 
+                                       :class="{ 'tab-active': selectedLang === 'python' }"
+                                       @click="selectedLang = 'python'">Python</a>
                                 </div>
                             </div>
-                        </div>
 
-                        <div class="card bg-base-100 shadow-xl" x-data="{ selectedLang: 'curl' }">
-                            <div class="card-body">
-                                <div class="flex">
-                                    <div class="tabs tabs-boxed">
-                                        <a class="tab" 
-                                           :class="{ 'tab-active': selectedLang === 'curl' }"
-                                           @click="selectedLang = 'curl'">cURL</a>
-                                        <a class="tab" 
-                                           :class="{ 'tab-active': selectedLang === 'node' }"
-                                           @click="selectedLang = 'node'">Node.js</a>
-                                        <a class="tab" 
-                                           :class="{ 'tab-active': selectedLang === 'python' }"
-                                           @click="selectedLang = 'python'">Python</a>
-                                    </div>
-                                </div>
-
-                                <!-- cURL Example -->
-                                <div class="mockup-code" x-show="selectedLang === 'curl'" style="background-color: #1a1a1a;">
-                                    <pre><code>1 curl -X POST https://api.hebo.ai/v1/chat \
+                            <!-- cURL Example -->
+                            <div class="mockup-code" x-show="selectedLang === 'curl'" style="background-color: #1a1a1a;">
+                                <pre><code>1 curl -X POST https://api.hebo.ai/v1/chat \
   2   -H "Authorization: Bearer ${API_KEY}" \
   3   -H "Content-Type: application/json" \
   4   -d '{"message": "Hello!"}'</code></pre>
-                                </div>
+                            </div>
 
-                                <!-- Node.js Example -->
-                                <div class="mockup-code" x-show="selectedLang === 'node'" style="background-color: #1a1a1a;">
-                                    <pre><code>1  const axios = require('axios');
+                            <!-- Node.js Example -->
+                            <div class="mockup-code" x-show="selectedLang === 'node'" style="background-color: #1a1a1a;">
+                                <pre><code>1  const axios = require('axios');
   2  
   3  const response = await axios.post('https://api.hebo.ai/v1/chat', {
   4      message: 'Hello!'
@@ -419,11 +338,11 @@
   8          'Content-Type': 'application/json'
   9      }
   10 });</code></pre>
-                                </div>
+                            </div>
 
-                                <!-- Python Example -->
-                                <div class="mockup-code" x-show="selectedLang === 'python'" style="background-color: #1a1a1a;">
-                                    <pre><code>1  import requests
+                            <!-- Python Example -->
+                            <div class="mockup-code" x-show="selectedLang === 'python'" style="background-color: #1a1a1a;">
+                                <pre><code>1  import requests
   2   
   3  response = requests.post(
   4      'https://api.hebo.ai/v1/chat',
@@ -433,150 +352,149 @@
   8          'Content-Type': 'application/json'
   9      }
   10 )</code></pre>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Billing Settings -->
-                    <div x-show="activeTab === 'billing'" class="space-y-6">
-                        <!-- Current Usage Stats -->
-                        <div class="card bg-base-100 shadow-xl">
-                            <div class="card-body">
-                                <div class="flex justify-between items-center">
-                                    <h3 class="card-title">Usage Overview</h3>
-                                    <div class="badge badge-primary">Professional Plan</div>
-                                </div>
-                                
-                                <div class="grid grid-cols-2 gap-6 mt-4">
-                                    <!-- API Calls Usage -->
-                                    <div class="flex flex-col items-center">
-                                        <div class="radial-progress text-primary" style="--value:75; --size:8rem;">75%</div>
-                                        <div class="mt-2 text-center">
-                                            <div class="font-medium">API Calls</div>
-                                            <div class="text-sm text-base-content/70">7,500/10,000</div>
-                                        </div>
-                                    </div>
-
-                                    <!-- Storage Usage -->
-                                    <div class="flex flex-col items-center">
-                                        <div class="radial-progress text-primary" style="--value:76; --size:8rem;">76%</div>
-                                        <div class="mt-2 text-center">
-                                            <div class="font-medium">Storage</div>
-                                            <div class="text-sm text-base-content/70">15.2/20 GB</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Pricing Tiers -->
-                        <div class="card bg-base-100 shadow-xl">
-                            <div class="card-body">
-                                <h3 class="card-title">Available Plans</h3>
-                                <div class="grid md:grid-cols-3 gap-4 mt-4">
-                                    <!-- Starter Plan -->
-                                    <div class="border rounded-lg p-4">
-                                        <h4 class="font-semibold">Starter</h4>
-                                        <div class="text-2xl font-bold mt-2">$29<span class="text-sm font-normal">/month</span></div>
-                                        <ul class="mt-4 space-y-2 text-sm">
-                                            <li class="flex items-center gap-2">
-                                                <svg class="w-4 h-4 text-success" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                                                </svg>
-                                                5,000 API calls
-                                            </li>
-                                            <li class="flex items-center gap-2">
-                                                <svg class="w-4 h-4 text-success" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                                                </svg>
-                                                10 GB storage
-                                            </li>
-                                        </ul>
-                                    </div>
-
-                                    <!-- Professional Plan -->
-                                    <div class="border rounded-lg p-4 bg-primary bg-opacity-5 border-primary">
-                                        <div class="badge badge-primary mb-2">Current Plan</div>
-                                        <h4 class="font-semibold">Professional</h4>
-                                        <div class="text-2xl font-bold mt-2">$99<span class="text-sm font-normal">/month</span></div>
-                                        <ul class="mt-4 space-y-2 text-sm">
-                                            <li class="flex items-center gap-2">
-                                                <svg class="w-4 h-4 text-success" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                                                </svg>
-                                                10,000 API calls
-                                            </li>
-                                            <li class="flex items-center gap-2">
-                                                <svg class="w-4 h-4 text-success" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                                                </svg>
-                                                20 GB storage
-                                            </li>
-                                        </ul>
-                                    </div>
-
-                                    <!-- Enterprise Plan -->
-                                    <div class="border rounded-lg p-4">
-                                        <h4 class="font-semibold">Enterprise</h4>
-                                        <div class="text-2xl font-bold mt-2">Custom</div>
-                                        <ul class="mt-4 space-y-2 text-sm">
-                                            <li class="flex items-center gap-2">
-                                                <svg class="w-4 h-4 text-success" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                                                </svg>
-                                                Unlimited API calls
-                                            </li>
-                                            <li class="flex items-center gap-2">
-                                                <svg class="w-4 h-4 text-success" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                                                </svg>
-                                                Custom storage
-                                            </li>
-                                        </ul>
-                                        <button class="btn btn-outline btn-sm w-full mt-4 gap-2">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                                <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
-                                            </svg>
-                                            Contact Us
-                                        </button>
-                                    </div>
-                                </div>
-                                
-                                <!-- Subscription Management Footer -->
-                                <div class="flex justify-between items-center mt-6 pt-6 border-t">
-                                    <div class="flex gap-2">
-                                        <button class="btn btn-primary h-8 min-h-[2rem]">Manage Your Subscription</button>
-                                        <button class="btn btn-ghost h-8 min-h-[2rem]">Download Invoice</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Payment Method -->
-                        <div class="card bg-base-100 shadow-xl">
-                            <div class="card-body">
-                                <h3 class="card-title">Payment Method</h3>
-                                <div class="flex items-center justify-between mt-4">
-                                    <div class="flex items-center gap-4">
-                                        <div class="bg-base-200 p-4 rounded-lg">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
-                                            </svg>
-                                        </div>
-                                        <div>
-                                            <div class="font-medium">Visa ending in 4242</div>
-                                            <div class="text-sm text-base-content/70">Expires 12/24</div>
-                                        </div>
-                                    </div>
-                                    <button class="btn btn-ghost btn-sm">Update</button>
-                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </main>
-        </div>
+
+                <!-- Billing Settings -->
+                <div x-show="activeTab === 'billing'" class="space-y-6">
+                    <!-- Current Usage Stats -->
+                    <div class="card bg-base-100 shadow-xl">
+                        <div class="card-body">
+                            <div class="flex justify-between items-center">
+                                <h3 class="card-title">Usage Overview</h3>
+                                <div class="badge badge-primary">Professional Plan</div>
+                            </div>
+                            
+                            <div class="grid grid-cols-2 gap-6 mt-4">
+                                <!-- API Calls Usage -->
+                                <div class="flex flex-col items-center">
+                                    <div class="radial-progress text-primary" style="--value:75; --size:8rem;">75%</div>
+                                    <div class="mt-2 text-center">
+                                        <div class="font-medium">API Calls</div>
+                                        <div class="text-sm text-base-content/70">7,500/10,000</div>
+                                    </div>
+                                </div>
+
+                                <!-- Storage Usage -->
+                                <div class="flex flex-col items-center">
+                                    <div class="radial-progress text-primary" style="--value:76; --size:8rem;">76%</div>
+                                    <div class="mt-2 text-center">
+                                        <div class="font-medium">Storage</div>
+                                        <div class="text-sm text-base-content/70">15.2/20 GB</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pricing Tiers -->
+                    <div class="card bg-base-100 shadow-xl">
+                        <div class="card-body">
+                            <h3 class="card-title">Available Plans</h3>
+                            <div class="grid md:grid-cols-3 gap-4 mt-4">
+                                <!-- Starter Plan -->
+                                <div class="border rounded-lg p-4">
+                                    <h4 class="font-semibold">Starter</h4>
+                                    <div class="text-2xl font-bold mt-2">$29<span class="text-sm font-normal">/month</span></div>
+                                    <ul class="mt-4 space-y-2 text-sm">
+                                        <li class="flex items-center gap-2">
+                                            <svg class="w-4 h-4 text-success" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                            </svg>
+                                            5,000 API calls
+                                        </li>
+                                        <li class="flex items-center gap-2">
+                                            <svg class="w-4 h-4 text-success" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                            </svg>
+                                            10 GB storage
+                                        </li>
+                                    </ul>
+                                </div>
+
+                                <!-- Professional Plan -->
+                                <div class="border rounded-lg p-4 bg-primary bg-opacity-5 border-primary">
+                                    <div class="badge badge-primary mb-2">Current Plan</div>
+                                    <h4 class="font-semibold">Professional</h4>
+                                    <div class="text-2xl font-bold mt-2">$99<span class="text-sm font-normal">/month</span></div>
+                                    <ul class="mt-4 space-y-2 text-sm">
+                                        <li class="flex items-center gap-2">
+                                            <svg class="w-4 h-4 text-success" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                            </svg>
+                                            10,000 API calls
+                                        </li>
+                                        <li class="flex items-center gap-2">
+                                            <svg class="w-4 h-4 text-success" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                            </svg>
+                                            20 GB storage
+                                        </li>
+                                    </ul>
+                                </div>
+
+                                <!-- Enterprise Plan -->
+                                <div class="border rounded-lg p-4">
+                                    <h4 class="font-semibold">Enterprise</h4>
+                                    <div class="text-2xl font-bold mt-2">Custom</div>
+                                    <ul class="mt-4 space-y-2 text-sm">
+                                        <li class="flex items-center gap-2">
+                                            <svg class="w-4 h-4 text-success" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                            </svg>
+                                            Unlimited API calls
+                                        </li>
+                                        <li class="flex items-center gap-2">
+                                            <svg class="w-4 h-4 text-success" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                            </svg>
+                                            Custom storage
+                                        </li>
+                                    </ul>
+                                    <button class="btn btn-outline btn-sm w-full mt-4 gap-2">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
+                                        </svg>
+                                        Contact Us
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <!-- Subscription Management Footer -->
+                            <div class="flex justify-between items-center mt-6 pt-6 border-t">
+                                <div class="flex gap-2">
+                                    <button class="btn btn-primary h-8 min-h-[2rem]">Manage Your Subscription</button>
+                                    <button class="btn btn-ghost h-8 min-h-[2rem]">Download Invoice</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Payment Method -->
+                    <div class="card bg-base-100 shadow-xl">
+                        <div class="card-body">
+                            <h3 class="card-title">Payment Method</h3>
+                            <div class="flex items-center justify-between mt-4">
+                                <div class="flex items-center gap-4">
+                                    <div class="bg-base-200 p-4 rounded-lg">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <div class="font-medium">Visa ending in 4242</div>
+                                        <div class="text-sm text-base-content/70">Expires 12/24</div>
+                                    </div>
+                                </div>
+                                <button class="btn btn-ghost btn-sm">Update</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
     </div>
 
     <!-- New Project Modal -->
