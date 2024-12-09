@@ -1593,6 +1593,20 @@ h3{
   padding: 1rem;
 }
 
+.indicator{
+  position: relative;
+  display: inline-flex;
+  width: -moz-max-content;
+  width: max-content;
+}
+
+.indicator :where(.indicator-item){
+  z-index: 1;
+  position: absolute;
+  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+  white-space: nowrap;
+}
+
 .input{
   flex-shrink: 1;
   -webkit-appearance: none;
@@ -1857,6 +1871,18 @@ h3{
 :where(.navbar > *:not(script, style)){
   display: inline-flex;
   align-items: center;
+}
+
+.progress{
+  position: relative;
+  width: 100%;
+  -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none;
+  overflow: hidden;
+  height: 0.5rem;
+  border-radius: var(--rounded-box, 1rem);
+  background-color: var(--fallback-bc,oklch(var(--bc)/0.2));
 }
 
 .radial-progress{
@@ -3105,6 +3131,51 @@ details.collapse summary::-webkit-details-marker{
   }
 }
 
+.progress::-moz-progress-bar{
+  border-radius: var(--rounded-box, 1rem);
+  --tw-bg-opacity: 1;
+  background-color: var(--fallback-bc,oklch(var(--bc)/var(--tw-bg-opacity)));
+}
+
+.progress:indeterminate{
+  --progress-color: var(--fallback-bc,oklch(var(--bc)/1));
+  background-image: repeating-linear-gradient(
+    90deg,
+    var(--progress-color) -1%,
+    var(--progress-color) 10%,
+    transparent 10%,
+    transparent 90%
+  );
+  background-size: 200%;
+  background-position-x: 15%;
+  animation: progress-loading 5s ease-in-out infinite;
+}
+
+.progress::-webkit-progress-bar{
+  border-radius: var(--rounded-box, 1rem);
+  background-color: transparent;
+}
+
+.progress::-webkit-progress-value{
+  border-radius: var(--rounded-box, 1rem);
+  --tw-bg-opacity: 1;
+  background-color: var(--fallback-bc,oklch(var(--bc)/var(--tw-bg-opacity)));
+}
+
+.progress:indeterminate::-moz-progress-bar{
+  background-color: transparent;
+  background-image: repeating-linear-gradient(
+    90deg,
+    var(--progress-color) -1%,
+    var(--progress-color) 10%,
+    transparent 10%,
+    transparent 90%
+  );
+  background-size: 200%;
+  background-position-x: 15%;
+  animation: progress-loading 5s ease-in-out infinite;
+}
+
 @keyframes progress-loading{
   50%{
     background-position-x: -115%;
@@ -3819,6 +3890,78 @@ html:has(.drawer-toggle:checked){
   scrollbar-gutter: stable;
 }
 
+.indicator :where(.indicator-item){
+  bottom: auto;
+  inset-inline-end: 0px;
+  inset-inline-start: auto;
+  top: 0px;
+  --tw-translate-y: -50%;
+  --tw-translate-x: 50%;
+  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+}
+
+.indicator :where(.indicator-item):where([dir="rtl"], [dir="rtl"] *){
+  --tw-translate-x: -50%;
+  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+}
+
+.indicator :where(.indicator-item.indicator-start){
+  inset-inline-end: auto;
+  inset-inline-start: 0px;
+  --tw-translate-x: -50%;
+  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+}
+
+.indicator :where(.indicator-item.indicator-start):where([dir="rtl"], [dir="rtl"] *){
+  --tw-translate-x: 50%;
+  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+}
+
+.indicator :where(.indicator-item.indicator-center){
+  inset-inline-end: 50%;
+  inset-inline-start: 50%;
+  --tw-translate-x: -50%;
+  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+}
+
+.indicator :where(.indicator-item.indicator-center):where([dir="rtl"], [dir="rtl"] *){
+  --tw-translate-x: 50%;
+  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+}
+
+.indicator :where(.indicator-item.indicator-end){
+  inset-inline-end: 0px;
+  inset-inline-start: auto;
+  --tw-translate-x: 50%;
+  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+}
+
+.indicator :where(.indicator-item.indicator-end):where([dir="rtl"], [dir="rtl"] *){
+  --tw-translate-x: -50%;
+  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+}
+
+.indicator :where(.indicator-item.indicator-bottom){
+  bottom: 0px;
+  top: auto;
+  --tw-translate-y: 50%;
+  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+}
+
+.indicator :where(.indicator-item.indicator-middle){
+  bottom: 50%;
+  top: 50%;
+  --tw-translate-y: -50%;
+  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+}
+
+.indicator :where(.indicator-item.indicator-top){
+  bottom: auto;
+  top: 0px;
+  --tw-translate-y: -50%;
+  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+}
+
 .input-sm{
   height: 2rem;
   padding-left: 0.75rem;
@@ -4197,6 +4340,10 @@ html:has(.drawer-toggle:checked){
   margin-bottom: 0.5rem;
 }
 
+.mb-3{
+  margin-bottom: 0.75rem;
+}
+
 .mb-4{
   margin-bottom: 1rem;
 }
@@ -4221,8 +4368,8 @@ html:has(.drawer-toggle:checked){
   margin-left: 1rem;
 }
 
-.mr-1{
-  margin-right: 0.25rem;
+.ml-auto{
+  margin-left: auto;
 }
 
 .mr-2{
@@ -4476,6 +4623,16 @@ html:has(.drawer-toggle:checked){
   animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
+@keyframes spin{
+  to{
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin{
+  animation: spin 1s linear infinite;
+}
+
 .cursor-pointer{
   cursor: pointer;
 }
@@ -4685,6 +4842,10 @@ html:has(.drawer-toggle:checked){
   --tw-bg-opacity: 0.05;
 }
 
+.fill-error{
+  fill: #EF4444;
+}
+
 .fill-success{
   fill: #10B981;
 }
@@ -4780,10 +4941,6 @@ html:has(.drawer-toggle:checked){
   padding-bottom: 2rem;
 }
 
-.pb-2{
-  padding-bottom: 0.5rem;
-}
-
 .pb-4{
   padding-bottom: 1rem;
 }
@@ -4820,6 +4977,10 @@ html:has(.drawer-toggle:checked){
   padding-right: 3rem;
 }
 
+.pt-2{
+  padding-top: 0.5rem;
+}
+
 .pt-6{
   padding-top: 1.5rem;
 }
@@ -4849,6 +5010,10 @@ html:has(.drawer-toggle:checked){
 .text-5xl{
   font-size: 3rem;
   line-height: 1;
+}
+
+.text-\[0\.55rem\]{
+  font-size: 0.55rem;
 }
 
 .text-lg{
@@ -4957,6 +5122,14 @@ html:has(.drawer-toggle:checked){
 
 .opacity-100{
   opacity: 1;
+}
+
+.opacity-25{
+  opacity: 0.25;
+}
+
+.opacity-75{
+  opacity: 0.75;
 }
 
 .shadow{

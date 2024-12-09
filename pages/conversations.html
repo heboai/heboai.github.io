@@ -123,6 +123,29 @@
 
             <!-- Right section - Chat -->
             <div class="w-2/3 flex flex-col">
+                <!-- Action buttons and quality indicator -->
+                <div class="flex items-center gap-2 p-2 border-b bg-base-100">
+                    <div class="flex items-center gap-1">
+                        <div class="radial-progress text-success" style="--value:85; --size:1.75rem;">
+                            <span class="text-[0.55rem]">85%</span>
+                        </div>
+                        <span class="text-xs text-base-content/70">Quality</span>
+                    </div>
+                    <div class="flex-1"></div>
+                    <button class="btn btn-ghost btn-xs" @click="showKnowledgeModal = true">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
+                        </svg>
+                        Add to Knowledge Base
+                    </button>
+                    <button class="btn btn-ghost btn-xs" @click="showEvaluationModal = true">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0112 15a9.065 9.065 0 00-6.23-.693L5 14.5m14.8.8l1.402 1.402c1.232 1.232.65 3.318-1.067 3.611A48.309 48.309 0 0112 21c-2.773 0-5.491-.235-8.135-.687-1.718-.293-2.3-2.379-1.067-3.61L5 14.5" />
+                        </svg>
+                        Add to Evaluation
+                    </button>
+                </div>
+
                 <!-- Chat messages area -->
                 <div class="flex-1 overflow-y-auto">
                     <div class="min-h-full flex flex-col justify-end">
@@ -174,25 +197,11 @@
                         </div>
                     </div>
 
-                    <!-- Status footer and action buttons -->
+                    <!-- Status footer - simplified -->
                     <div class="bg-base-100">
                         <div class="px-4 py-2 text-xs text-base-content/70 flex items-center justify-center gap-2">
                             <div class="w-2 h-2 rounded-full bg-success"></div>
                             The agent is using the last version of Knowledge
-                        </div>
-                        <div class="flex gap-2 px-4 pb-2">
-                            <button class="btn btn-outline btn-xs flex-1" @click="showKnowledgeModal = true">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 mr-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
-                                </svg>
-                                Add to Knowledge Base
-                            </button>
-                            <button class="btn btn-outline btn-xs flex-1" @click="showEvaluationModal = true">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 mr-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0112 15a9.065 9.065 0 00-6.23-.693L5 14.5m14.8.8l1.402 1.402c1.232 1.232.65 3.318-1.067 3.611A48.309 48.309 0 0112 21c-2.773 0-5.491-.235-8.135-.687-1.718-.293-2.3-2.379-1.067-3.61L5 14.5" />
-                                </svg>
-                                Add to Evaluation
-                            </button>
                         </div>
                     </div>
                 </div>

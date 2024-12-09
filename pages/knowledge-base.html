@@ -23,6 +23,10 @@
       show: false,
       x: 0,
       y: 0
+    },
+    retrySync() {
+      // Add sync retry logic here
+      console.log('Retrying sync...');
     }
 }"
   >
@@ -118,34 +122,84 @@
                 <ul class="space-y-0.5">
                   <li>
                     <a href="#role" 
-                       class="block px-3 py-1.5 rounded-lg transition-colors hover:bg-base-300 text-sm"
+                       class="block px-3 py-1.5 rounded-lg transition-colors hover:bg-base-300 text-sm flex items-center justify-between"
                        :class="{ 'bg-primary text-primary-content': currentSection === 'role' }"
                        @click="currentSection = 'role'">
-                      Role
+                      <span>Role</span>
+                      <!-- Green dot for in sync -->
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 6 6" class="w-2 h-2 fill-success">
+                        <circle cx="3" cy="3" r="3" />
+                      </svg>
                     </a>
                   </li>
                   <li>
                     <a href="#formatting" 
-                       class="block px-3 py-1.5 rounded-lg transition-colors hover:bg-base-300 text-sm"
+                       class="block px-3 py-1.5 rounded-lg transition-colors hover:bg-base-300 text-sm flex items-center justify-between"
                        :class="{ 'bg-primary text-primary-content': currentSection === 'formatting' }"
                        @click="currentSection = 'formatting'">
-                      Formatting
+                      <span>Formatting</span>
+                      <!-- Yellow dot with spinning animation for sync in progress -->
+                      <svg class="animate-spin w-3 h-3 text-warning" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
                     </a>
                   </li>
                   <li>
                     <a href="#scenario1" 
-                       class="block px-3 py-1.5 rounded-lg transition-colors hover:bg-base-300 text-sm"
+                       class="block px-3 py-1.5 rounded-lg transition-colors hover:bg-base-300 text-sm flex items-center justify-between"
                        :class="{ 'bg-primary text-primary-content': currentSection === 'scenario1' }"
                        @click="currentSection = 'scenario1'">
-                      Scenario 1
+                      <span>Scenario 1</span>
+                      <!-- Red dot with retry icon for sync failed -->
+                      <div class="flex items-center gap-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 6 6" class="w-2 h-2 fill-error">
+                          <circle cx="3" cy="3" r="3" />
+                        </svg>
+                        <button class="hover:text-primary" @click.stop="retrySync">
+                          <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
+                          </svg>
+                        </button>
+                      </div>
                     </a>
+                    <ul class="pl-4 mt-0.5 space-y-0.5">
+                      <li>
+                        <a href="#scenario1-billing" 
+                           class="block px-3 py-1.5 rounded-lg transition-colors hover:bg-base-300 text-sm flex items-center justify-between"
+                           :class="{ 'bg-primary text-primary-content': currentSection === 'scenario1-billing' }"
+                           @click="currentSection = 'scenario1-billing'">
+                          <span>Billing Procedures</span>
+                          <!-- Green dot for in sync -->
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 6 6" class="w-2 h-2 fill-success">
+                            <circle cx="3" cy="3" r="3" />
+                          </svg>
+                        </a>
+                      </li>
+                      <li>
+                        <a href="#scenario1-refunds" 
+                           class="block px-3 py-1.5 rounded-lg transition-colors hover:bg-base-300 text-sm flex items-center justify-between"
+                           :class="{ 'bg-primary text-primary-content': currentSection === 'scenario1-refunds' }"
+                           @click="currentSection = 'scenario1-refunds'">
+                          <span>Refund Policies</span>
+                          <!-- Green dot for in sync -->
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 6 6" class="w-2 h-2 fill-success">
+                            <circle cx="3" cy="3" r="3" />
+                          </svg>
+                        </a>
+                      </li>
+                    </ul>
                   </li>
                   <li>
                     <a href="#examples" 
-                       class="block px-3 py-1.5 rounded-lg transition-colors hover:bg-base-300 text-sm"
+                       class="block px-3 py-1.5 rounded-lg transition-colors hover:bg-base-300 text-sm flex items-center justify-between"
                        :class="{ 'bg-primary text-primary-content': currentSection === 'examples' }"
                        @click="currentSection = 'examples'">
-                      Examples
+                      <span>Examples</span>
+                      <!-- Green dot for in sync -->
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 6 6" class="w-2 h-2 fill-success">
+                        <circle cx="3" cy="3" r="3" />
+                      </svg>
                     </a>
                   </li>
                 </ul>
@@ -280,6 +334,95 @@
                   <button 
                     class="w-full px-3 py-2 hover:bg-base-100 flex items-center gap-2 text-left"
                     @click="
+                      document.execCommand('insertHTML', false, '<div class=\'card bg-base-200 my-4\'><div class=\'card-body\'><h3 class=\'card-title text-sm\'>Evaluation Example</h3><div class=\'space-y-2 text-sm\'><p><strong>Input:</strong> </p><p><strong>Expected:</strong> </p><p><strong>Actual:</strong> </p><p><strong>Score:</strong> <span class=\'badge badge-success\'>Pass</span></p></div></div></div>');
+                      slashMenu.show = false;
+                    "
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0112 15a9.065 9.065 0 00-6.23-.693L5 14.5m14.8.8l1.402 1.402c1.232 1.232.65 3.318-1.067 3.611A48.309 48.309 0 0112 21c-2.773 0-5.491-.235-8.135-.687-1.718-.293-2.3-2.379-1.067-3.61L5 14.5" />
+                    </svg>
+                    Example from evaluation
+                  </button>
+
+                  <!-- Header Formatting Options -->
+                  <div class="border-t border-base-200 mt-2 pt-2">
+                    <div class="px-2 py-1 text-sm text-base-content/70">Format as...</div>
+                    
+                    <button 
+                      class="w-full px-3 py-2 hover:bg-base-100 flex items-center gap-2 text-left"
+                      @click="
+                        document.execCommand('insertHTML', false, '<h1 class=\'text-4xl font-bold mb-8\'>Heading 1</h1>');
+                        slashMenu.show = false;
+                      "
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12.75V12A2.25 2.25 0 014.5 9.75h15A2.25 2.25 0 0121.75 12v.75m-8.69-6.44l-2.12-2.12a1.5 1.5 0 00-1.061-.44H4.5A2.25 2.25 0 002.25 6v12a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9a2.25 2.25 0 00-2.25-2.25h-5.379a1.5 1.5 0 01-1.06-.44z" />
+                      </svg>
+                      Heading 1
+                    </button>
+                    
+                    <button 
+                      class="w-full px-3 py-2 hover:bg-base-100 flex items-center gap-2 text-left"
+                      @click="
+                        document.execCommand('insertHTML', false, '<h2 class=\'text-2xl font-semibold mt-8 mb-4\'>Heading 2</h2>');
+                        slashMenu.show = false;
+                      "
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12.75V12A2.25 2.25 0 014.5 9.75h15A2.25 2.25 0 0121.75 12v.75m-8.69-6.44l-2.12-2.12a1.5 1.5 0 00-1.061-.44H4.5A2.25 2.25 0 002.25 6v12a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9a2.25 2.25 0 00-2.25-2.25h-5.379a1.5 1.5 0 01-1.06-.44z" />
+                      </svg>
+                      Heading 2
+                    </button>
+                    
+                    <button 
+                      class="w-full px-3 py-2 hover:bg-base-100 flex items-center gap-2 text-left"
+                      @click="
+                        document.execCommand('insertHTML', false, '<h3 class=\'text-xl font-semibold mt-6 mb-3\'>Heading 3</h3>');
+                        slashMenu.show = false;
+                      "
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12.75V12A2.25 2.25 0 014.5 9.75h15A2.25 2.25 0 0121.75 12v.75m-8.69-6.44l-2.12-2.12a1.5 1.5 0 00-1.061-.44H4.5A2.25 2.25 0 002.25 6v12a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9a2.25 2.25 0 00-2.25-2.25h-5.379a1.5 1.5 0 01-1.06-.44z" />
+                      </svg>
+                      Heading 3
+                    </button>
+                  </div>
+
+                  <!-- Add Tool Usage Options -->
+                  <div class="border-t border-base-200 mt-2 pt-2">
+                    <div class="px-2 py-1 text-sm text-base-content/70">Use Tool...</div>
+                    
+                    <button 
+                      class="w-full px-3 py-2 hover:bg-base-100 flex items-center gap-2 text-left"
+                      @click="
+                        document.execCommand('insertHTML', false, '<code>use tool_1</code>');
+                        slashMenu.show = false;
+                      "
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75a4.5 4.5 0 01-4.884 4.484c-1.076-.091-2.264.071-2.95.904l-7.152 8.684a2.548 2.548 0 11-3.586-3.586l8.684-7.152c.833-.686.995-1.874.904-2.95a4.5 4.5 0 016.336-4.486l-3.276 3.276a3.004 3.004 0 002.25 2.25l3.276-3.276c.256.565.398 1.192.398 1.852z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4.867 19.125h.008v.008h-.008v-.008z" />
+                      </svg>
+                      Use tool_1
+                    </button>
+
+                    <button 
+                      class="w-full px-3 py-2 hover:bg-base-100 flex items-center gap-2 text-left"
+                      @click="
+                        document.execCommand('insertHTML', false, '<code>use inventory_check</code>');
+                        slashMenu.show = false;
+                      "
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" />
+                      </svg>
+                      Use inventory_check
+                    </button>
+                  </div>
+
+                  <button 
+                    class="w-full px-3 py-2 hover:bg-base-100 flex items-center gap-2 text-left border-t border-base-200 mt-2"
+                    @click="
                       const input = document.createElement('input');
                       input.type = 'file';
                       input.accept = '.md,.txt';
@@ -379,6 +522,68 @@
                         <li>Technical subscription errors</li>
                         <li>Special discount requests</li>
                         <li>Enterprise plan inquiries</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Billing Procedures content -->
+              <div x-show="currentSection === 'scenario1-billing'" class="max-w-3xl mx-auto py-20 px-12">
+                <div class="prose max-w-none">
+                  <div contenteditable="true" class="outline-none">
+                    <h1 class="text-4xl font-bold mb-8">Billing Procedures</h1>
+                    <div class="text-lg text-base-content/80 leading-relaxed">
+                      <h2 class="text-2xl font-semibold mt-8 mb-4">Standard Billing Process</h2>
+                      <ul class="space-y-2">
+                        <li>Monthly billing cycle on the 1st of each month</li>
+                        <li>Pro-rated charges for mid-month upgrades</li>
+                        <li>Automatic payment processing</li>
+                      </ul>
+
+                      <h2 class="text-2xl font-semibold mt-8 mb-4">Payment Methods</h2>
+                      <ul class="space-y-2">
+                        <li>Credit/Debit Cards (Visa, Mastercard, Amex)</li>
+                        <li>PayPal</li>
+                        <li>Wire Transfer (Enterprise only)</li>
+                      </ul>
+
+                      <h2 class="text-2xl font-semibold mt-8 mb-4">Handling Failed Payments</h2>
+                      <ul class="space-y-2">
+                        <li>3 retry attempts over 7 days</li>
+                        <li>Email notifications at each retry</li>
+                        <li>Account suspension after final retry</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Refund Policies content -->
+              <div x-show="currentSection === 'scenario1-refunds'" class="max-w-3xl mx-auto py-20 px-12">
+                <div class="prose max-w-none">
+                  <div contenteditable="true" class="outline-none">
+                    <h1 class="text-4xl font-bold mb-8">Refund Policies</h1>
+                    <div class="text-lg text-base-content/80 leading-relaxed">
+                      <h2 class="text-2xl font-semibold mt-8 mb-4">Refund Eligibility</h2>
+                      <ul class="space-y-2">
+                        <li>14-day money-back guarantee for new subscriptions</li>
+                        <li>Pro-rated refunds for annual plans</li>
+                        <li>Service outage compensation</li>
+                      </ul>
+
+                      <h2 class="text-2xl font-semibold mt-8 mb-4">Refund Process</h2>
+                      <ul class="space-y-2">
+                        <li>Submit request through support portal</li>
+                        <li>2-3 business days processing time</li>
+                        <li>Refund to original payment method</li>
+                      </ul>
+
+                      <h2 class="text-2xl font-semibold mt-8 mb-4">Non-refundable Items</h2>
+                      <ul class="space-y-2">
+                        <li>Add-on services</li>
+                        <li>Custom development work</li>
+                        <li>Usage-based charges</li>
                       </ul>
                     </div>
                   </div>
