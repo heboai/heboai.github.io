@@ -13,29 +13,45 @@
   <body
     class="min-h-screen bg-base-100"
     x-data="{ 
-    currentSection: 'role',
-    showVersionModal: false,
-    newKeyName: '',
-    generatedKey: null,
-    showKey: false,
-    selectedLang: 'curl',
-    slashMenu: {
-      show: false,
-      x: 0,
-      y: 0
-    },
-    retrySync() {
-      // Add sync retry logic here
-      console.log('Retrying sync...');
-    }
-}"
+      currentSection: 'role',
+      showVersionModal: false,
+      newKeyName: '',
+      generatedKey: null,
+      showKey: false,
+      selectedLang: 'curl',
+      knowledgeSections: [],
+      showSearchModal: false,
+      collapsed: false,
+      showKnowledgeCarousel: false,
+      knowledgeCarouselPosition: { x: 0, y: 0 },
+      usedKnowledge: [
+        { title: 'Adding Content', excerpt: 'New entries can be added through the workspace sidebar using the New Page button...' },
+        { title: 'Markdown Support', excerpt: 'Content can be formatted using markdown syntax including headers, lists, and code blocks...' },
+        { title: 'File Import', excerpt: 'External content can be imported from markdown and text files...' }
+      ],
+      addNewKnowledge() {
+        this.knowledgeSections.push({
+          id: 'new-knowledge-' + Date.now(),
+          name: 'New knowledge'
+        });
+      },
+      slashMenu: {
+        show: false,
+        x: 0,
+        y: 0
+      },
+      retrySync() {
+        // Add sync retry logic here
+        console.log('Retrying sync...');
+      }
+    }"
   >
     <div class="flex flex-col min-h-screen">
       <!-- Top Navigation -->
       <nav class="bg-base-200 border-b">
         <div class="flex items-center justify-between h-16 px-6">
           <!-- Logo section -->
-          <a href="projects.html" class="text-primary hover:text-primary-focus inline-flex items-center gap-1">
+          <a href="agents.html" class="text-primary hover:text-primary-focus inline-flex items-center gap-1">
             Gato@v2
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 6 6" class="w-2 h-2 fill-success">
               <circle cx="3" cy="3" r="3" />
@@ -44,7 +60,7 @@
 
           <!-- Main navigation -->
           <div class="flex items-center gap-2">
-            <a href="home.html" class="btn btn-sm btn-ghost">
+            <a href="dashboard.html" class="btn btn-sm btn-ghost">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
               </svg>
@@ -100,136 +116,120 @@
         <div class="flex h-full">
           <!-- Workspace sidebar -->
           <aside class="w-64 bg-base-200 border-r flex flex-col">
+            <!-- Add new section for collapse/expand -->
+            <div class="px-4 py-2 border-b border-base-300">
+              <div class="flex items-center justify-between">
+                <!-- Collapse/Expand button -->
+                <button 
+                  class="w-full flex items-center justify-between px-3 py-1.5 text-xs font-semibold text-base-content/50 uppercase tracking-wider hover:bg-base-300 rounded-lg"
+                  @click="currentSection = 'settings'"
+                >
+                  <span>Agent</span>
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+
             <!-- Navigation takes remaining space -->
             <nav class="flex-1 p-2">
               <!-- Workspace navigation -->
-              <div class="px-2 mb-4">
-                <div class="relative">
-                  <input type="text" 
-                         placeholder="Search knowledge..." 
-                         class="input input-sm input-bordered w-full pl-9" />
-                  <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-base-content/50" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
-                    </svg>
-                  </div>
-                </div>
+              <div class="px-2 mb-2">
+                <button 
+                  class="w-full flex items-center justify-between px-3 py-1.5 text-xs font-semibold text-base-content/50 uppercase tracking-wider hover:bg-base-300 rounded-lg"
+                  @click="showSearchModal = true"
+                >
+                  <span>Search</span>
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+                  </svg>
+                </button>
               </div>
+
+              <!-- Border separator -->
+              <div class="px-4 border-b border-base-300"></div>
 
               <!-- Knowledge Base Items -->
               <div class="mb-6">
-                <div class="text-xs font-semibold text-base-content/50 uppercase tracking-wider px-3 mb-2">Knowledge Base</div>
-                <ul class="space-y-0.5">
+                <div class="px-2 mt-2">
+                  <button 
+                    class="w-full flex items-center justify-between px-3 py-1.5 text-xs font-semibold text-base-content/50 uppercase tracking-wider hover:bg-base-300 rounded-lg"
+                    @click="knowledgeSections.push({
+                      id: 'new-knowledge-' + Date.now(),
+                      name: 'New piece of knowledge'
+                    }); currentSection = 'new-knowledge-' + Date.now()"
+                  >
+                    <span>Knowledge Base</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                    </svg>
+                  </button>
+                </div>
+                <ul class="space-y-0.5 knowledge-base-items pl-2">
                   <li>
                     <a href="#role" 
-                       class="block px-3 py-1.5 rounded-lg transition-colors hover:bg-base-300 text-sm flex items-center justify-between"
-                       :class="{ 'bg-primary text-primary-content': currentSection === 'role' }"
+                       class="block px-3 py-1.5 rounded-lg transition-colors hover:bg-base-300 text-sm"
+                       :class="{ 'bg-base-300': currentSection === 'role' }"
                        @click="currentSection = 'role'">
                       <span>Role</span>
-                      <!-- Green dot for in sync -->
-                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 6 6" class="w-2 h-2 fill-success">
-                        <circle cx="3" cy="3" r="3" />
-                      </svg>
                     </a>
                   </li>
                   <li>
                     <a href="#formatting" 
-                       class="block px-3 py-1.5 rounded-lg transition-colors hover:bg-base-300 text-sm flex items-center justify-between"
-                       :class="{ 'bg-primary text-primary-content': currentSection === 'formatting' }"
+                       class="block px-3 py-1.5 rounded-lg transition-colors hover:bg-base-300 text-sm"
+                       :class="{ 'bg-base-300': currentSection === 'formatting' }"
                        @click="currentSection = 'formatting'">
                       <span>Formatting</span>
-                      <!-- Yellow dot with spinning animation for sync in progress -->
-                      <svg class="animate-spin w-3 h-3 text-warning" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                      </svg>
                     </a>
                   </li>
                   <li>
                     <a href="#scenario1" 
-                       class="block px-3 py-1.5 rounded-lg transition-colors hover:bg-base-300 text-sm flex items-center justify-between"
-                       :class="{ 'bg-primary text-primary-content': currentSection === 'scenario1' }"
+                       class="block px-3 py-1.5 rounded-lg transition-colors hover:bg-base-300 text-sm"
+                       :class="{ 'bg-base-300': currentSection === 'scenario1' }"
                        @click="currentSection = 'scenario1'">
                       <span>Scenario 1</span>
-                      <!-- Red dot with retry icon -->
-                      <div class="flex items-center gap-1">
-                        <button class="hover:text-primary" @click.stop="retrySync">
-                          <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
-                          </svg>
-                        </button>
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 6 6" class="w-2 h-2 fill-error">
-                          <circle cx="3" cy="3" r="3" />
-                        </svg>
-                      </div>
                     </a>
                     <ul class="pl-4 mt-0.5 space-y-0.5">
                       <li>
                         <a href="#scenario1-billing" 
-                           class="block px-3 py-1.5 rounded-lg transition-colors hover:bg-base-300 text-sm flex items-center justify-between"
-                           :class="{ 'bg-primary text-primary-content': currentSection === 'scenario1-billing' }"
+                           class="block px-3 py-1.5 rounded-lg transition-colors hover:bg-base-300 text-sm"
+                           :class="{ 'bg-base-300': currentSection === 'scenario1-billing' }"
                            @click="currentSection = 'scenario1-billing'">
                           <span>Billing Procedures</span>
-                          <!-- Green dot for in sync -->
-                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 6 6" class="w-2 h-2 fill-success">
-                            <circle cx="3" cy="3" r="3" />
-                          </svg>
                         </a>
                       </li>
                       <li>
                         <a href="#scenario1-refunds" 
-                           class="block px-3 py-1.5 rounded-lg transition-colors hover:bg-base-300 text-sm flex items-center justify-between"
-                           :class="{ 'bg-primary text-primary-content': currentSection === 'scenario1-refunds' }"
+                           class="block px-3 py-1.5 rounded-lg transition-colors hover:bg-base-300 text-sm"
+                           :class="{ 'bg-base-300': currentSection === 'scenario1-refunds' }"
                            @click="currentSection = 'scenario1-refunds'">
                           <span>Refund Policies</span>
-                          <!-- Green dot for in sync -->
-                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 6 6" class="w-2 h-2 fill-success">
-                            <circle cx="3" cy="3" r="3" />
-                          </svg>
                         </a>
                       </li>
                     </ul>
                   </li>
                   <li>
                     <a href="#examples" 
-                       class="block px-3 py-1.5 rounded-lg transition-colors hover:bg-base-300 text-sm flex items-center justify-between"
-                       :class="{ 'bg-primary text-primary-content': currentSection === 'examples' }"
+                       class="block px-3 py-1.5 rounded-lg transition-colors hover:bg-base-300 text-sm"
+                       :class="{ 'bg-base-300': currentSection === 'examples' }"
                        @click="currentSection = 'examples'">
                       <span>Examples</span>
-                      <!-- Green dot for in sync -->
-                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 6 6" class="w-2 h-2 fill-success">
-                        <circle cx="3" cy="3" r="3" />
-                      </svg>
                     </a>
                   </li>
-                </ul>
-              </div>
-
-              <!-- Configuration Section - Separated -->
-              <div>
-                <div class="text-xs font-semibold text-base-content/50 uppercase tracking-wider px-3 mb-2">Agent</div>
-                <ul class="space-y-0.5">
-                  <li>
-                    <a href="#settings" 
-                       class="block px-3 py-1.5 rounded-lg transition-colors hover:bg-base-300 text-sm"
-                       :class="{ 'bg-primary text-primary-content': currentSection === 'settings' }"
-                       @click="currentSection = 'settings'">
-                      Configuration
-                    </a>
-                  </li>
+                  <template x-for="section in knowledgeSections" :key="section.id">
+                    <li>
+                      <a :href="'#' + section.id"
+                         class="block px-3 py-1.5 rounded-lg transition-colors hover:bg-base-300 text-sm"
+                         :class="{ 'bg-base-300': currentSection === section.id }"
+                         @click="currentSection = section.id">
+                        <span x-text="section.name"></span>
+                      </a>
+                    </li>
+                  </template>
                 </ul>
               </div>
             </nav>
-
-            <!-- New page button - fixed at bottom -->
-            <div class="p-4 border-t">
-              <button class="btn btn-outline btn-sm w-full">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                </svg>
-                Piece of Knowledge
-              </button>
-            </div>
           </aside>
 
           <!-- Content and chat area -->
@@ -239,38 +239,9 @@
               <!-- Role content -->
               <div x-show="currentSection === 'role'" class="max-w-3xl mx-auto py-20 px-12">
                 <div class="prose max-w-none">
-                  <div 
-                    contenteditable="true" 
-                    class="outline-none"
-                    @keydown.slash.prevent="
-                      const selection = window.getSelection();
-                      const range = selection.getRangeAt(0);
-                      
-                      // Create a temporary span to measure position
-                      const span = document.createElement('span');
-                      range.insertNode(span);
-                      
-                      // Get the position relative to the viewport
-                      const rect = span.getBoundingClientRect();
-                      
-                      // Calculate position accounting for scroll
-                      slashMenu.x = rect.left + window.scrollX;
-                      slashMenu.y = rect.top + rect.height + window.scrollY;
-                      
-                      // Remove the temporary span
-                      span.parentNode.removeChild(span);
-                      
-                      // Restore the selection
-                      selection.removeAllRanges();
-                      selection.addRange(range);
-                      
-                      slashMenu.show = true;
-                    "
-                    @keydown.escape="slashMenu.show = false"
-                    @click="slashMenu.show = false"
-                  >
+                  <div contenteditable="true" class="outline-none">
                     <h1 class="text-4xl font-bold mb-8">Role Definition</h1>
-                    <div class="text-lg text-base-content/80 leading-relaxed">
+                    <div class="text-base text-base-content/80 leading-relaxed">
                       You are an AI assistant for Hebo, a customer support automation platform.
                       Your primary role is to help users with their inquiries about the platform's features,
                       subscription management, and technical support.
@@ -451,7 +422,7 @@
                 <div class="prose max-w-none">
                   <div contenteditable="true" class="outline-none">
                     <h1 class="text-4xl font-bold mb-8">Formatting Guidelines</h1>
-                    <div class="text-lg text-base-content/80 leading-relaxed">
+                    <div class="text-base text-base-content/80 leading-relaxed">
                       <h2 class="text-2xl font-semibold mt-8 mb-4">Markdown Structure</h2>
                       <ul class="space-y-2">
                         <li>Headers: Use # for main points</li>
@@ -489,7 +460,7 @@
                 <div class="prose max-w-none">
                   <div contenteditable="true" class="outline-none">
                     <h1 class="text-4xl font-bold mb-8">Subscription Support Scenario</h1>
-                    <div class="text-lg text-base-content/80 leading-relaxed">
+                    <div class="text-base text-base-content/80 leading-relaxed">
                       <p class="mb-6">
                         When handling subscription-related inquiries, follow this structured approach to ensure consistent and effective support.
                       </p>
@@ -533,7 +504,7 @@
                 <div class="prose max-w-none">
                   <div contenteditable="true" class="outline-none">
                     <h1 class="text-4xl font-bold mb-8">Billing Procedures</h1>
-                    <div class="text-lg text-base-content/80 leading-relaxed">
+                    <div class="text-base text-base-content/80 leading-relaxed">
                       <h2 class="text-2xl font-semibold mt-8 mb-4">Standard Billing Process</h2>
                       <ul class="space-y-2">
                         <li>Monthly billing cycle on the 1st of each month</li>
@@ -564,7 +535,7 @@
                 <div class="prose max-w-none">
                   <div contenteditable="true" class="outline-none">
                     <h1 class="text-4xl font-bold mb-8">Refund Policies</h1>
-                    <div class="text-lg text-base-content/80 leading-relaxed">
+                    <div class="text-base text-base-content/80 leading-relaxed">
                       <h2 class="text-2xl font-semibold mt-8 mb-4">Refund Eligibility</h2>
                       <ul class="space-y-2">
                         <li>14-day money-back guarantee for new subscriptions</li>
@@ -596,7 +567,7 @@
                   <div contenteditable="true" class="outline-none">
                     <h1 class="text-4xl font-bold mb-8">Conversation Examples</h1>
                     
-                    <div class="text-lg text-base-content/80 leading-relaxed">
+                    <div class="text-base text-base-content/80 leading-relaxed">
                       <p class="mb-6">
                         Reference examples of common support scenarios and their ideal responses. Use these to maintain consistency in tone and problem-solving approach.
                       </p>
@@ -718,23 +689,34 @@
                           </label>
                         </div>
 
-                        <!-- Tools Section -->
+                        <!-- Replace the Tools section with this Extensions section -->
                         <div class="form-control">
                           <label class="label">
-                            <span class="label-text font-bold">Tools</span>
+                            <span class="label-text font-bold">Extensions</span>
                           </label>
                           
-                          <!-- Tool list with Add button -->
+                          <!-- Extension buttons -->
                           <div class="space-y-6">
-                            <!-- Add tool button -->
-                            <button type="button"
-                                    class="btn btn-outline btn-primary btn-sm"
-                                    @click="showToolModal = true">
-                              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                              </svg>
-                              Add Tool
-                            </button>
+                            <!-- Action and Data Source buttons -->
+                            <div class="flex gap-2">
+                              <button type="button"
+                                      class="btn btn-outline btn-primary btn-sm"
+                                      @click="showActionModal = true">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                                </svg>
+                                Add Action
+                              </button>
+                              
+                              <button type="button"
+                                      class="btn btn-outline btn-primary btn-sm"
+                                      @click="showDataSourceModal = true">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                                </svg>
+                                Add Data Source
+                              </button>
+                            </div>
 
                             <!-- Tool list -->
                             <div class="space-y-6">
@@ -904,17 +886,54 @@ response = requests.post(
               <!-- Chat messages area - scrollable -->
               <div class="flex-1 overflow-y-auto">
                 <div class="min-h-full flex flex-col justify-end">
-                  <div class="px-6 space-y-4 pb-4">
-                    <!-- Example messages -->
-                    <div class="chat chat-end">
-                      <div class="max-w-[80%] bg-base-200 rounded-lg px-4 py-3">
-                        How can I add new entries to the knowledge base?
+                  <!-- First User message -->
+                  <div class="flex px-4 py-8 sm:px-6">
+                    <img
+                      class="mr-2 flex h-8 w-8 rounded-full sm:mr-4"
+                      src="https://dummyimage.com/256x256/363536/ffffff&text=U"
+                    />
+                    <div class="flex max-w-3xl items-center">
+                      <p>How can I add new entries to the knowledge base?</p>
+                    </div>
+                  </div>
+
+                  <!-- Assistant message -->
+                  <div class="flex bg-base-200 px-4 py-8 sm:px-6">
+                    <img
+                      class="mr-2 flex h-8 w-8 rounded-full sm:mr-4"
+                      src="https://dummyimage.com/256x256/354ea1/ffffff&text=A"
+                    />
+                    <div class="flex w-full flex-col">
+                      <p class="max-w-3xl">
+                        You can add new entries by clicking the "New Page" button in the workspace sidebar. This will create a new page where you can add your content using markdown formatting.
+                      </p>
+                      <div class="flex justify-end mt-4">
+                        <button class="text-base-content/50 hover:text-primary"
+                          @click="
+                            const rect = $el.getBoundingClientRect();
+                            knowledgeCarouselPosition = {
+                              x: rect.left - 384 + rect.width,
+                              y: rect.top + window.scrollY + rect.height + 8
+                            };
+                            showKnowledgeCarousel = true;
+                          "
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
+                          </svg>
+                        </button>
                       </div>
                     </div>
-                    <div class="chat chat-start">
-                      <div class="w-[calc(100%-4rem)] rounded-lg p-3">
-                        You can add new entries by clicking the "New Page" button in the workspace sidebar. This will create a new page where you can add your content using markdown formatting.
-                      </div>
+                  </div>
+
+                  <!-- Second User message -->
+                  <div class="flex px-4 py-8 sm:px-6">
+                    <img
+                      class="mr-2 flex h-8 w-8 rounded-full sm:mr-4"
+                      src="https://dummyimage.com/256x256/363536/ffffff&text=U"
+                    />
+                    <div class="flex max-w-3xl items-center">
+                      <p>Can I import content from external files?</p>
                     </div>
                   </div>
                 </div>
@@ -950,6 +969,82 @@ response = requests.post(
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Search Modal -->
+      <div x-show="showSearchModal" 
+           class="fixed inset-0 bg-black/50 z-50 flex items-start justify-center pt-[20vh]"
+           @click="showSearchModal = false"
+           x-transition:enter="transition ease-out duration-200"
+           x-transition:enter-start="opacity-0"
+           x-transition:enter-end="opacity-100"
+           x-transition:leave="transition ease-in duration-150"
+           x-transition:leave-start="opacity-100"
+           x-transition:leave-end="opacity-0"
+      >
+        <div class="w-[640px] bg-base-100 rounded-xl shadow-2xl"
+             @click.stop
+             x-transition:enter="transition ease-out duration-200"
+             x-transition:enter-start="opacity-0 scale-95"
+             x-transition:enter-end="opacity-100 scale-100"
+             x-transition:leave="transition ease-in duration-150"
+             x-transition:leave-start="opacity-100 scale-100"
+             x-transition:leave-end="opacity-0 scale-95"
+        >
+          <div class="p-4">
+            <div class="relative">
+              <input type="text" 
+                     class="input input-lg w-full pl-12 bg-base-200 border-none"
+                     placeholder="Search knowledge..."
+                     @keydown.escape="showSearchModal = false"
+                     x-ref="searchInput"
+                     x-init="$nextTick(() => $refs.searchInput.focus())"
+              />
+              <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-base-content/50" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+                </svg>
+              </div>
+            </div>
+          </div>
+          <!-- Search results would go here -->
+        </div>
+      </div>
+
+      <!-- Knowledge Carousel -->
+      <div 
+        x-show="showKnowledgeCarousel" 
+        x-transition:enter="transition ease-out duration-200"
+        x-transition:enter-start="opacity-0 scale-95"
+        x-transition:enter-end="opacity-100 scale-100"
+        x-transition:leave="transition ease-in duration-150"
+        x-transition:leave-start="opacity-100 scale-100"
+        x-transition:leave-end="opacity-0 scale-95"
+        @click.outside="showKnowledgeCarousel = false"
+        :style="`position: absolute; left: ${knowledgeCarouselPosition.x}px; top: ${knowledgeCarouselPosition.y}px;`"
+        class="bg-base-100 rounded-lg shadow-xl border border-base-300 w-96 z-50"
+      >
+        <div class="p-4">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-semibold text-sm">Knowledge Used</h3>
+            <button @click="showKnowledgeCarousel = false" class="btn btn-ghost btn-xs">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+          
+          <div class="space-y-3">
+            <template x-for="(item, index) in usedKnowledge" :key="index">
+              <div class="card bg-base-200 shadow-sm">
+                <div class="card-body p-3">
+                  <h4 class="card-title text-sm" x-text="item.title"></h4>
+                  <p class="text-xs text-base-content/70" x-text="item.excerpt"></p>
+                </div>
+              </div>
+            </template>
           </div>
         </div>
       </div>
