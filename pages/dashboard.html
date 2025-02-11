@@ -83,11 +83,64 @@
                         <span class="text-sm font-medium">Agent @v2 Active</span>
                     </div>
                 </div>
-                <select class="select select-sm select-bordered w-40">
-                    <option>Last 24 hours</option>
-                    <option>Last 7 days</option>
-                    <option>Last 30 days</option>
-                </select>
+                <div class="flex items-center gap-4">
+                    <select class="select select-sm select-bordered w-40">
+                        <option>Last 24 hours</option>
+                        <option>Last 7 days</option>
+                        <option>Last 30 days</option>
+                    </select>
+                    
+                    <div class="relative" x-data="{ notificationOpen: false }">
+                        <button class="btn btn-sm btn-ghost" @click="notificationOpen = !notificationOpen">
+                            <div class="indicator">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
+                                </svg>
+                                <span class="badge badge-xs badge-error indicator-item">2</span>
+                            </div>
+                        </button>
+                        
+                        <!-- Notification Panel -->
+                        <div x-show="notificationOpen" 
+                             x-transition:enter="transition ease-out duration-300"
+                             x-transition:enter-start="opacity-0 transform translate-y-[-10px]"
+                             x-transition:enter-end="opacity-100 transform translate-y-0"
+                             x-transition:leave="transition ease-in duration-200"
+                             x-transition:leave-start="opacity-100 transform translate-y-0"
+                             x-transition:leave-end="opacity-0 transform translate-y-[-10px]"
+                             @click.away="notificationOpen = false"
+                             class="absolute right-0 mt-2 w-[400px] bg-base-100 rounded-lg shadow-lg border border-base-200 z-50">
+                            <div class="p-4 max-w-full">
+                                <div class="flex justify-between items-center mb-4">
+                                    <h3 class="font-medium">Notifications</h3>
+                                    <span class="text-sm text-error">2 unread</span>
+                                </div>
+                                <div class="space-y-4">
+                                    <div class="flex items-start gap-3 p-3 hover:bg-base-200 rounded-lg transition-colors">
+                                        <div class="w-2 h-2 mt-2 rounded-full bg-error shrink-0"></div>
+                                        <div class="flex-1 min-w-0">
+                                            <p class="text-sm font-medium">Knowledge Base Update Required</p>
+                                            <p class="text-sm text-base-content/70 mt-1">New documents are available for processing. Click to review and index.</p>
+                                            <div class="mt-2">
+                                                <a href="knowledge-base.html" class="btn btn-xs btn-primary">Review Documents</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-start gap-3 p-3 hover:bg-base-200 rounded-lg transition-colors">
+                                        <div class="w-2 h-2 mt-2 rounded-full bg-error shrink-0"></div>
+                                        <div class="flex-1 min-w-0">
+                                            <p class="text-sm font-medium">Evaluation Results Ready</p>
+                                            <p class="text-sm text-base-content/70 mt-1">Monthly performance evaluation results are ready for review.</p>
+                                            <div class="mt-2">
+                                                <a href="evaluation.html" class="btn btn-xs btn-primary">View Results</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <!-- Usage Statistics -->
@@ -133,7 +186,7 @@
                 <div class="card bg-base-100 shadow-sm">
                     <div class="card-body p-4">
                         <div class="flex justify-between items-start mb-2">
-                            <h3 class="card-title text-sm font-medium">Context Precision</h3>
+                            <h3 class="card-title text-sm font-medium">Information Accuracy</h3>
                             <span class="text-xl font-semibold">94%</span>
                         </div>
                         <div class="w-full h-[60px] rounded-lg flex items-end">
@@ -151,7 +204,7 @@
                 <div class="card bg-base-100 shadow-sm">
                     <div class="card-body p-4">
                         <div class="flex justify-between items-start mb-2">
-                            <h3 class="card-title text-sm font-medium">Context Recall</h3>
+                            <h3 class="card-title text-sm font-medium">Knowledge Coverage</h3>
                             <span class="text-xl font-semibold">89%</span>
                         </div>
                         <div class="w-full h-[60px] rounded-lg flex items-end">
@@ -169,7 +222,7 @@
                 <div class="card bg-base-100 shadow-sm">
                     <div class="card-body p-4">
                         <div class="flex justify-between items-start mb-2">
-                            <h3 class="card-title text-sm font-medium">Tool Call Accuracy</h3>
+                            <h3 class="card-title text-sm font-medium">Task Completion Rate</h3>
                             <span class="text-xl font-semibold">97%</span>
                         </div>
                         <div class="w-full h-[60px] rounded-lg flex items-end">
@@ -187,7 +240,7 @@
                 <div class="card bg-base-100 shadow-sm">
                     <div class="card-body p-4">
                         <div class="flex justify-between items-start mb-2">
-                            <h3 class="card-title text-sm font-medium">Factual Correctness</h3>
+                            <h3 class="card-title text-sm font-medium">Answer Accuracy</h3>
                             <span class="text-xl font-semibold">92%</span>
                         </div>
                         <div class="w-full h-[60px] rounded-lg flex items-end">
@@ -205,7 +258,7 @@
                 <div class="card bg-base-100 shadow-sm">
                     <div class="card-body p-4">
                         <div class="flex justify-between items-start mb-2">
-                            <h3 class="card-title text-sm font-medium">Faithfulness</h3>
+                            <h3 class="card-title text-sm font-medium">Source Consistency</h3>
                             <span class="text-xl font-semibold">95%</span>
                         </div>
                         <div class="w-full h-[60px] rounded-lg flex items-end">
@@ -223,7 +276,7 @@
                 <div class="card bg-base-100 shadow-sm">
                     <div class="card-body p-4">
                         <div class="flex justify-between items-start mb-2">
-                            <h3 class="card-title text-sm font-medium">Response Relevancy</h3>
+                            <h3 class="card-title text-sm font-medium">Response Quality</h3>
                             <span class="text-xl font-semibold">91%</span>
                         </div>
                         <div class="w-full h-[60px] rounded-lg flex items-end">
