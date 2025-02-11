@@ -23,7 +23,9 @@
       showSearchModal: false,
       collapsed: false,
       showKnowledgeCarousel: false,
+      showDataSourceForm: false,
       knowledgeCarouselPosition: { x: 0, y: 0 },
+      tools: [],
       usedKnowledge: [
         { title: 'Adding Content', excerpt: 'New entries can be added through the workspace sidebar using the New Page button...' },
         { title: 'Markdown Support', excerpt: 'Content can be formatted using markdown syntax including headers, lists, and code blocks...' },
@@ -43,7 +45,7 @@
       retrySync() {
         // Add sync retry logic here
         console.log('Retrying sync...');
-      }
+      },
     }"
   >
     <div class="flex flex-col min-h-screen">
@@ -527,23 +529,32 @@
                     <div class="text-base text-base-content/80 leading-relaxed">
                       <h2 class="text-2xl font-semibold mt-8 mb-4">Standard Billing Process</h2>
                       <ul class="space-y-2">
-                        <li>Monthly billing cycle on the 1st of each month</li>
-                        <li>Pro-rated charges for mid-month upgrades</li>
-                        <li>Automatic payment processing</li>
+                        <li>When customers inquire about billing dates, inform them that charges are processed on the 1st of each month</li>
+                        <li>If customers upgrade their plan mid-month, explain that charges will be pro-rated for the remaining days</li>
+                        <li>Assure customers that payments are processed automatically - no manual intervention needed on their part</li>
                       </ul>
 
-                      <h2 class="text-2xl font-semibold mt-8 mb-4">Payment Methods</h2>
+                      <h2 class="text-2xl font-semibold mt-8 mb-4">Payment Method Information</h2>
                       <ul class="space-y-2">
-                        <li>Credit/Debit Cards (Visa, Mastercard, Amex)</li>
-                        <li>PayPal</li>
-                        <li>Wire Transfer (Enterprise only)</li>
+                        <li>When customers ask about payment options, access the payment methods page to confirm we accept:
+                          <ol class="ml-4 mt-2">
+                            <li>		<strong>1.</strong> Credit/Debit Cards (Visa, Mastercard, Amex)</li>
+                            <li>		<strong>2.</strong> PayPal</li>
+                            <li>		<strong>3.</strong> Wire Transfer (verify enterprise status before offering)</li>
+                          </ol>
+                        </li>
                       </ul>
 
-                      <h2 class="text-2xl font-semibold mt-8 mb-4">Handling Failed Payments</h2>
+                      <h2 class="text-2xl font-semibold mt-8 mb-4">Failed Payment Protocol</h2>
                       <ul class="space-y-2">
-                        <li>3 retry attempts over 7 days</li>
-                        <li>Email notifications at each retry</li>
-                        <li>Account suspension after final retry</li>
+                        <li>When addressing failed payments, check the payment status page to verify:
+                          <ul class="ml-4 mt-2">
+                            <li>Current retry attempt number (maximum 3 attempts over 7 days)</li>
+                            <li>Status of notification emails sent to customer</li>
+                            <li>Account status - note if approaching suspension threshold</li>
+                          </ul>
+                        </li>
+                        <li>Inform customers of remaining retry attempts and potential account suspension timeline</li>
                       </ul>
                     </div>
                   </div>
@@ -730,12 +741,95 @@
                               
                               <button type="button"
                                       class="btn btn-outline btn-primary btn-sm"
-                                      @click="showDataSourceModal = true">
+                                      @click="showDataSourceForm = !showDataSourceForm">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                   <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                                 </svg>
                                 Add Data Source
                               </button>
+                            </div>
+
+                            <!-- Data Source Form -->
+                            <div x-show="showDataSourceForm" 
+                                 class="mt-4 card bg-base-200 shadow-sm border border-base-300"
+                                 x-transition:enter="transition ease-out duration-200"
+                                 x-transition:enter-start="opacity-0 transform -translate-y-4"
+                                 x-transition:enter-end="opacity-100 transform translate-y-0">
+                              <div class="card-body">
+                                <div class="space-y-4">
+                                  <!-- Name -->
+                                  <div class="form-control">
+                                    <label class="label">
+                                      <span class="label-text font-medium">Name</span>
+                                    </label>
+                                    <input type="text" 
+                                           class="input input-bordered w-full" 
+                                           placeholder="Enter data source name"
+                                           value="customer_subscription_lookup" />
+                                  </div>
+
+                                  <!-- Description -->
+                                  <div class="form-control">
+                                    <label class="label">
+                                      <span class="label-text font-medium">Description</span>
+                                    </label>
+                                    <textarea class="textarea textarea-bordered h-24" 
+                                              placeholder="Enter description">Use this data source when a user asks about their subscription details, billing status, or next payment date. The source provides current subscription plan, billing cycle, and payment information for a given customer email.</textarea>
+                                  </div>
+
+                                  <!-- Interpolation Template -->
+                                  <div class="form-control">
+                                    <label class="label">
+                                      <span class="label-text font-medium">Interpolation Template</span>
+                                    </label>
+                                    <textarea class="textarea textarea-bordered font-mono h-24" 
+                                              placeholder="Enter template">Customer {{email}} is on the {{plan_name}} plan ({{status}}). Their next billing date is {{next_billing_date}}. Current period started on {{current_period_start}} and will end on {{current_period_end}}. Monthly cost: ${{amount_decimal}}.</textarea>
+                                  </div>
+
+                                  <!-- DB Connection String -->
+                                  <div class="form-control">
+                                    <label class="label">
+                                      <span class="label-text font-medium">Database Connection String</span>
+                                    </label>
+                                    <input type="text" 
+                                           class="input input-bordered font-mono" 
+                                           placeholder="Enter connection string"
+                                           value="postgresql://billing_read:pass@billing-db.internal:5432/billing" />
+                                  </div>
+
+                                  <!-- Query -->
+                                  <div class="form-control">
+                                    <label class="label">
+                                      <span class="label-text font-medium">Query</span>
+                                    </label>
+                                    <textarea class="textarea textarea-bordered font-mono h-32" 
+                                              placeholder="Enter SQL query">SELECT 
+  c.email,
+  s.plan_name,
+  s.status,
+  s.current_period_start,
+  s.current_period_end,
+  s.next_billing_date,
+  s.amount_decimal
+FROM customers c
+JOIN subscriptions s ON c.id = s.customer_id
+WHERE c.email = :email
+  AND s.status IN ('active', 'trialing')
+ORDER BY s.created_at DESC
+LIMIT 1;</textarea>
+                                  </div>
+
+                                  <!-- Form Actions -->
+                                  <div class="flex justify-end gap-2">
+                                    <button class="btn btn-ghost" @click="showDataSourceForm = false">
+                                      Cancel
+                                    </button>
+                                    <button class="btn btn-primary">
+                                      Save Data Source
+                                    </button>
+                                  </div>
+                                </div>
+                              </div>
                             </div>
 
                             <!-- Tool list -->
@@ -913,7 +1007,7 @@ response = requests.post(
                       src="https://dummyimage.com/256x256/363536/ffffff&text=U"
                     />
                     <div class="flex max-w-3xl items-center">
-                      <p>How can I add new entries to the knowledge base?</p>
+                      <p>When do I expect my next billing?</p>
                     </div>
                   </div>
 
@@ -925,7 +1019,7 @@ response = requests.post(
                     />
                     <div class="flex w-full flex-col">
                       <p class="max-w-3xl">
-                        You can add new entries by clicking the "New Page" button in the workspace sidebar. This will create a new page where you can add your content using markdown formatting.
+                        Our billing schedule, charges are processed on the 1st of each month. Let me help you understand your billing cycle better. Would you like me to check your specific account details or explain how our billing process works in general?
                       </p>
                       <div class="flex justify-end mt-4">
                         <button class="text-base-content/50 hover:text-primary"
@@ -953,7 +1047,7 @@ response = requests.post(
                       src="https://dummyimage.com/256x256/363536/ffffff&text=U"
                     />
                     <div class="flex max-w-3xl items-center">
-                      <p>Can I import content from external files?</p>
+                      <p>What happens if I upgrade mid-month?</p>
                     </div>
                   </div>
                 </div>
