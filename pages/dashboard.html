@@ -7,7 +7,42 @@
     <link href="../dist/style.css" rel="stylesheet">
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
-<body class="min-h-screen bg-base-100">
+<body class="min-h-screen bg-base-100" x-data="{ 
+    agents: [
+        {
+            name: 'Gato',
+            versions: [
+                { version: 'v3', active: true, updatedAt: '2024-03-15T14:30:00Z' },
+                { version: 'v2', active: false, updatedAt: '2024-02-28T09:15:00Z' },
+                { version: 'v1', active: false, updatedAt: '2024-01-20T16:45:00Z' }
+            ]
+        },
+        {
+            name: 'Gato-testing',
+            versions: [
+                { version: 'v2', active: true, updatedAt: '2024-03-10T11:20:00Z' },
+                { version: 'v1', active: false, updatedAt: '2024-02-15T13:40:00Z' }
+            ]
+        },
+        {
+            name: 'Gato 4 Stores',
+            versions: [
+                { version: 'v4', active: true, updatedAt: '2024-03-18T08:30:00Z' },
+                { version: 'v3', active: false, updatedAt: '2024-03-01T15:20:00Z' },
+                { version: 'v2', active: false, updatedAt: '2024-02-15T10:45:00Z' },
+                { version: 'v1', active: false, updatedAt: '2024-01-30T09:00:00Z' }
+            ]
+        }
+    ],
+    formatDate(dateString) {
+        const date = new Date(dateString);
+        return date.toLocaleDateString('en-US', { 
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric'
+        });
+    }
+}">
     <!-- Replace the drawer with a navbar -->
     <div class="flex flex-col min-h-screen">
         <nav class="bg-base-200 border-b">
@@ -74,223 +109,284 @@
         </nav>
 
         <!-- Main content -->
-        <main class="flex-1 p-6">
-            <!-- Agent Status and Time Range Selector -->
-            <div class="flex justify-between items-center mb-6">
-                <div class="flex items-center gap-2">
-                    <div class="flex items-center gap-2 bg-base-200 px-3 py-1.5 rounded-lg">
-                        <div class="w-2 h-2 rounded-full bg-success animate-pulse"></div>
-                        <span class="text-sm font-medium">Agent @v2 Active</span>
-                    </div>
-                </div>
-                <div class="flex items-center gap-4">
-                    <select class="select select-sm select-bordered w-40">
-                        <option>Last 24 hours</option>
-                        <option>Last 7 days</option>
-                        <option>Last 30 days</option>
-                    </select>
-                    
-                    <div class="relative" x-data="{ notificationOpen: false }">
-                        <button class="btn btn-sm btn-ghost" @click="notificationOpen = !notificationOpen">
-                            <div class="indicator">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
-                                </svg>
-                                <span class="badge badge-xs badge-error indicator-item">2</span>
-                            </div>
+        <div class="flex flex-1">
+            <!-- Left side - Agents list -->
+            <div class="w-64 bg-base-200 border-r">
+                <div class="p-4">
+                    <!-- Add new agent button -->
+                    <div class="px-2 mb-4">
+                        <button 
+                            class="w-full flex items-center justify-between px-3 py-1.5 text-xs font-semibold text-base-content/50 uppercase tracking-wider hover:bg-base-300 rounded-lg"
+                            @click="agents.push({
+                                name: 'New Agent',
+                                versions: [{ version: 'v1', active: true, updatedAt: new Date().toISOString() }]
+                            })"
+                        >
+                            <span>Add Agent</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                            </svg>
                         </button>
+                    </div>
+
+                    <!-- Border separator -->
+                    <div class="px-4 border-b border-base-300 mb-4"></div>
+
+                    <!-- Agents list -->
+                    <ul class="space-y-1">
+                        <template x-for="agent in agents" :key="agent.name">
+                            <li>
+                                <div class="px-2">
+                                    <a href="#" 
+                                       class="block px-3 py-2 rounded-lg transition-colors hover:bg-base-300 text-sm"
+                                       :class="{ 'bg-base-300': agent.name === 'Gato' }"
+                                    >
+                                        <div class="font-medium" x-text="agent.name"></div>
+                                        
+                                        <!-- Versions as nested items -->
+                                        <ul class="mt-1 space-y-1">
+                                            <template x-for="version in agent.versions" :key="version.version">
+                                                <li class="flex items-center gap-2 text-sm py-0.5 px-1">
+                                                    <div class="flex items-center gap-2">
+                                                        <div class="w-8">
+                                                            <span x-text="version.version"></span>
+                                                        </div>
+                                                        <div class="text-xs text-base-content/70" x-text="formatDate(version.updatedAt)"></div>
+                                                        <template x-if="version.active">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 fill-success" viewBox="0 0 24 24">
+                                                                <circle cx="12" cy="12" r="12"/>
+                                                            </svg>
+                                                        </template>
+                                                    </div>
+                                                </li>
+                                            </template>
+                                        </ul>
+                                    </a>
+                                </div>
+                            </li>
+                        </template>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Right side content -->
+            <div class="flex-1 flex flex-col">
+                <!-- Top controls -->
+                <div class="flex justify-end items-center p-6">
+                    <div class="flex items-center gap-4">
+                        <select class="select select-sm select-bordered w-40">
+                            <option>Last 24 hours</option>
+                            <option>Last 7 days</option>
+                            <option>Last 30 days</option>
+                        </select>
                         
-                        <!-- Notification Panel -->
-                        <div x-show="notificationOpen" 
-                             x-transition:enter="transition ease-out duration-300"
-                             x-transition:enter-start="opacity-0 transform translate-y-[-10px]"
-                             x-transition:enter-end="opacity-100 transform translate-y-0"
-                             x-transition:leave="transition ease-in duration-200"
-                             x-transition:leave-start="opacity-100 transform translate-y-0"
-                             x-transition:leave-end="opacity-0 transform translate-y-[-10px]"
-                             @click.away="notificationOpen = false"
-                             class="absolute right-0 mt-2 w-[400px] bg-base-100 rounded-lg shadow-lg border border-base-200 z-50">
-                            <div class="p-4 max-w-full">
-                                <div class="flex justify-between items-center mb-4">
-                                    <h3 class="font-medium">Notifications</h3>
-                                    <span class="text-sm text-error">2 unread</span>
+                        <div class="relative" x-data="{ notificationOpen: false }">
+                            <button class="btn btn-sm btn-ghost" @click="notificationOpen = !notificationOpen">
+                                <div class="indicator">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
+                                    </svg>
+                                    <span class="badge badge-xs badge-error indicator-item">2</span>
                                 </div>
-                                <div class="space-y-4">
-                                    <div class="flex items-start gap-3 p-3 hover:bg-base-200 rounded-lg transition-colors">
-                                        <div class="w-2 h-2 mt-2 rounded-full bg-error shrink-0"></div>
-                                        <div class="flex-1 min-w-0">
-                                            <p class="text-sm font-medium">Knowledge Base Update Required</p>
-                                            <p class="text-sm text-base-content/70 mt-1">New documents are available for processing. Click to review and index.</p>
-                                            <div class="mt-2">
-                                                <a href="knowledge-base.html" class="btn btn-xs btn-primary">Review Documents</a>
+                            </button>
+                            
+                            <!-- Notification Panel -->
+                            <div x-show="notificationOpen" 
+                                 x-transition:enter="transition ease-out duration-300"
+                                 x-transition:enter-start="opacity-0 transform translate-y-[-10px]"
+                                 x-transition:enter-end="opacity-100 transform translate-y-0"
+                                 x-transition:leave="transition ease-in duration-200"
+                                 x-transition:leave-start="opacity-100 transform translate-y-0"
+                                 x-transition:leave-end="opacity-0 transform translate-y-[-10px]"
+                                 @click.away="notificationOpen = false"
+                                 class="absolute right-0 mt-2 w-[400px] bg-base-100 rounded-lg shadow-lg border border-base-200 z-50">
+                                <div class="p-4 max-w-full">
+                                    <div class="flex justify-between items-center mb-4">
+                                        <h3 class="font-medium">Alerts</h3>
+                                        <span class="text-sm text-error">2 unread</span>
+                                    </div>
+                                    <div class="space-y-4">
+                                        <div class="flex items-start gap-3 p-3 hover:bg-base-200 rounded-lg transition-colors">
+                                            <div class="w-2 h-2 mt-2 rounded-full bg-error shrink-0"></div>
+                                            <div class="flex-1 min-w-0">
+                                                <p class="text-sm font-medium">Suspicious Activity Detected</p>
+                                                <p class="text-sm text-base-content/70 mt-1">3 conversations flagged for unusual patterns in product inquiries. Review and update knowledge base if needed.</p>
+                                                <div class="mt-2 flex gap-2">
+                                                    <a href="conversations.html" class="btn btn-xs btn-primary">Review Conversations</a>
+                                                    <a href="knowledge-base.html" class="btn btn-xs btn-ghost">Update KB</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-start gap-3 p-3 hover:bg-base-200 rounded-lg transition-colors">
+                                            <div class="w-2 h-2 mt-2 rounded-full bg-error shrink-0"></div>
+                                            <div class="flex-1 min-w-0">
+                                                <p class="text-sm font-medium">Knowledge Gap Identified</p>
+                                                <p class="text-sm text-base-content/70 mt-1">Multiple users asking about new product features not covered in knowledge base. Quick update recommended.</p>
+                                                <div class="mt-2 flex gap-2">
+                                                    <a href="knowledge-base.html" class="btn btn-xs btn-primary">Add to Knowledge Base</a>
+                                                    <button class="btn btn-xs btn-ghost">Ignore</button>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="flex items-start gap-3 p-3 hover:bg-base-200 rounded-lg transition-colors">
-                                        <div class="w-2 h-2 mt-2 rounded-full bg-error shrink-0"></div>
-                                        <div class="flex-1 min-w-0">
-                                            <p class="text-sm font-medium">Evaluation Results Ready</p>
-                                            <p class="text-sm text-base-content/70 mt-1">Monthly performance evaluation results are ready for review.</p>
-                                            <div class="mt-2">
-                                                <a href="evaluation.html" class="btn btn-xs btn-primary">View Results</a>
-                                            </div>
-                                        </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Main metrics content -->
+                <div class="flex-1 overflow-y-auto px-6">
+                    <!-- Usage Statistics -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                        <!-- Conversation Stats -->
+                        <div class="card bg-base-100 shadow-sm">
+                            <div class="card-body p-4">
+                                <h3 class="card-title text-sm font-medium mb-4">Usage</h3>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <div class="text-sm text-base-content/70">Total Conversations</div>
+                                        <div class="text-2xl font-semibold mt-1">1,234</div>
                                     </div>
+                                    <div>
+                                        <div class="text-sm text-base-content/70">Total Messages</div>
+                                        <div class="text-2xl font-semibold mt-1">8,392</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Cost Stats -->
+                        <div class="card bg-base-100 shadow-sm">
+                            <div class="card-body p-4">
+                                <h3 class="card-title text-sm font-medium mb-4">Cost</h3>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <div class="text-sm text-base-content/70">Total Cost</div>
+                                        <div class="text-2xl font-semibold mt-1">$123.45</div>
+                                    </div>
+                                    <div>
+                                        <div class="text-sm text-base-content/70">Avg. Cost/Conv.</div>
+                                        <div class="text-2xl font-semibold mt-1">$0.10</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Metrics Grid -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                        <!-- Context Precision -->
+                        <div class="card bg-base-100 shadow-sm">
+                            <div class="card-body p-4">
+                                <div class="flex justify-between items-start mb-2">
+                                    <h3 class="card-title text-sm font-medium">Information Accuracy</h3>
+                                    <span class="text-xl font-semibold">94%</span>
+                                </div>
+                                <div class="w-full h-[60px] rounded-lg flex items-end">
+                                    <svg class="w-full h-full" viewBox="0 0 100 20" preserveAspectRatio="none">
+                                        <path d="M0 15 L10 12 L20 16 L30 10 L40 13 L50 8 L60 14 L70 9 L80 15 L90 7 L100 5" 
+                                              fill="none" 
+                                              stroke="#FACC15" 
+                                              stroke-width="1"/>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Context Recall -->
+                        <div class="card bg-base-100 shadow-sm">
+                            <div class="card-body p-4">
+                                <div class="flex justify-between items-start mb-2">
+                                    <h3 class="card-title text-sm font-medium">Knowledge Coverage</h3>
+                                    <span class="text-xl font-semibold">89%</span>
+                                </div>
+                                <div class="w-full h-[60px] rounded-lg flex items-end">
+                                    <svg class="w-full h-full" viewBox="0 0 100 20" preserveAspectRatio="none">
+                                        <path d="M0 10 L10 8 L20 12 L30 7 L40 15 L50 10 L60 8 L70 13 L80 9 L90 11 L100 8" 
+                                              fill="none" 
+                                              stroke="#FACC15" 
+                                              stroke-width="1"/>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Tool Call Accuracy -->
+                        <div class="card bg-base-100 shadow-sm">
+                            <div class="card-body p-4">
+                                <div class="flex justify-between items-start mb-2">
+                                    <h3 class="card-title text-sm font-medium">Task Completion Rate</h3>
+                                    <span class="text-xl font-semibold">97%</span>
+                                </div>
+                                <div class="w-full h-[60px] rounded-lg flex items-end">
+                                    <svg class="w-full h-full" viewBox="0 0 100 20" preserveAspectRatio="none">
+                                        <path d="M0 5 L10 3 L20 4 L30 2 L40 5 L50 3 L60 4 L70 2 L80 3 L90 4 L100 3" 
+                                              fill="none" 
+                                              stroke="#FACC15" 
+                                              stroke-width="1"/>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Factual Correctness -->
+                        <div class="card bg-base-100 shadow-sm">
+                            <div class="card-body p-4">
+                                <div class="flex justify-between items-start mb-2">
+                                    <h3 class="card-title text-sm font-medium">Answer Accuracy</h3>
+                                    <span class="text-xl font-semibold">92%</span>
+                                </div>
+                                <div class="w-full h-[60px] rounded-lg flex items-end">
+                                    <svg class="w-full h-full" viewBox="0 0 100 20" preserveAspectRatio="none">
+                                        <path d="M0 8 L10 10 L20 7 L30 9 L40 6 L50 8 L60 7 L70 10 L80 8 L90 7 L100 8" 
+                                              fill="none" 
+                                              stroke="#FACC15" 
+                                              stroke-width="1"/>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Faithfulness -->
+                        <div class="card bg-base-100 shadow-sm">
+                            <div class="card-body p-4">
+                                <div class="flex justify-between items-start mb-2">
+                                    <h3 class="card-title text-sm font-medium">Source Consistency</h3>
+                                    <span class="text-xl font-semibold">95%</span>
+                                </div>
+                                <div class="w-full h-[60px] rounded-lg flex items-end">
+                                    <svg class="w-full h-full" viewBox="0 0 100 20" preserveAspectRatio="none">
+                                        <path d="M0 5 L10 4 L20 3 L30 5 L40 4 L50 3 L60 5 L70 4 L80 3 L90 4 L100 5" 
+                                              fill="none" 
+                                              stroke="#FACC15" 
+                                              stroke-width="1"/>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Response Relevancy -->
+                        <div class="card bg-base-100 shadow-sm">
+                            <div class="card-body p-4">
+                                <div class="flex justify-between items-start mb-2">
+                                    <h3 class="card-title text-sm font-medium">Response Quality</h3>
+                                    <span class="text-xl font-semibold">91%</span>
+                                </div>
+                                <div class="w-full h-[60px] rounded-lg flex items-end">
+                                    <svg class="w-full h-full" viewBox="0 0 100 20" preserveAspectRatio="none">
+                                        <path d="M0 10 L10 8 L20 11 L30 9 L40 10 L50 8 L60 11 L70 9 L80 10 L90 8 L100 9" 
+                                              fill="none" 
+                                              stroke="#FACC15" 
+                                              stroke-width="1"/>
+                                    </svg>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-
-            <!-- Usage Statistics -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                <!-- Conversation Stats -->
-                <div class="card bg-base-100 shadow-sm">
-                    <div class="card-body p-4">
-                        <h3 class="card-title text-sm font-medium mb-4">Usage</h3>
-                        <div class="grid grid-cols-2 gap-4">
-                            <div>
-                                <div class="text-sm text-base-content/70">Total Conversations</div>
-                                <div class="text-2xl font-semibold mt-1">1,234</div>
-                            </div>
-                            <div>
-                                <div class="text-sm text-base-content/70">Total Messages</div>
-                                <div class="text-2xl font-semibold mt-1">8,392</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Cost Stats -->
-                <div class="card bg-base-100 shadow-sm">
-                    <div class="card-body p-4">
-                        <h3 class="card-title text-sm font-medium mb-4">Cost</h3>
-                        <div class="grid grid-cols-2 gap-4">
-                            <div>
-                                <div class="text-sm text-base-content/70">Total Cost</div>
-                                <div class="text-2xl font-semibold mt-1">$123.45</div>
-                            </div>
-                            <div>
-                                <div class="text-sm text-base-content/70">Avg. Cost/Conv.</div>
-                                <div class="text-2xl font-semibold mt-1">$0.10</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Metrics Grid -->
-            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-                <!-- Context Precision -->
-                <div class="card bg-base-100 shadow-sm">
-                    <div class="card-body p-4">
-                        <div class="flex justify-between items-start mb-2">
-                            <h3 class="card-title text-sm font-medium">Information Accuracy</h3>
-                            <span class="text-xl font-semibold">94%</span>
-                        </div>
-                        <div class="w-full h-[60px] rounded-lg flex items-end">
-                            <svg class="w-full h-full" viewBox="0 0 100 20" preserveAspectRatio="none">
-                                <path d="M0 15 L10 12 L20 16 L30 10 L40 13 L50 8 L60 14 L70 9 L80 15 L90 7 L100 5" 
-                                      fill="none" 
-                                      stroke="#FACC15" 
-                                      stroke-width="1"/>
-                            </svg>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Context Recall -->
-                <div class="card bg-base-100 shadow-sm">
-                    <div class="card-body p-4">
-                        <div class="flex justify-between items-start mb-2">
-                            <h3 class="card-title text-sm font-medium">Knowledge Coverage</h3>
-                            <span class="text-xl font-semibold">89%</span>
-                        </div>
-                        <div class="w-full h-[60px] rounded-lg flex items-end">
-                            <svg class="w-full h-full" viewBox="0 0 100 20" preserveAspectRatio="none">
-                                <path d="M0 10 L10 8 L20 12 L30 7 L40 15 L50 10 L60 8 L70 13 L80 9 L90 11 L100 8" 
-                                      fill="none" 
-                                      stroke="#FACC15" 
-                                      stroke-width="1"/>
-                            </svg>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Tool Call Accuracy -->
-                <div class="card bg-base-100 shadow-sm">
-                    <div class="card-body p-4">
-                        <div class="flex justify-between items-start mb-2">
-                            <h3 class="card-title text-sm font-medium">Task Completion Rate</h3>
-                            <span class="text-xl font-semibold">97%</span>
-                        </div>
-                        <div class="w-full h-[60px] rounded-lg flex items-end">
-                            <svg class="w-full h-full" viewBox="0 0 100 20" preserveAspectRatio="none">
-                                <path d="M0 5 L10 3 L20 4 L30 2 L40 5 L50 3 L60 4 L70 2 L80 3 L90 4 L100 3" 
-                                      fill="none" 
-                                      stroke="#FACC15" 
-                                      stroke-width="1"/>
-                            </svg>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Factual Correctness -->
-                <div class="card bg-base-100 shadow-sm">
-                    <div class="card-body p-4">
-                        <div class="flex justify-between items-start mb-2">
-                            <h3 class="card-title text-sm font-medium">Answer Accuracy</h3>
-                            <span class="text-xl font-semibold">92%</span>
-                        </div>
-                        <div class="w-full h-[60px] rounded-lg flex items-end">
-                            <svg class="w-full h-full" viewBox="0 0 100 20" preserveAspectRatio="none">
-                                <path d="M0 8 L10 10 L20 7 L30 9 L40 6 L50 8 L60 7 L70 10 L80 8 L90 7 L100 8" 
-                                      fill="none" 
-                                      stroke="#FACC15" 
-                                      stroke-width="1"/>
-                            </svg>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Faithfulness -->
-                <div class="card bg-base-100 shadow-sm">
-                    <div class="card-body p-4">
-                        <div class="flex justify-between items-start mb-2">
-                            <h3 class="card-title text-sm font-medium">Source Consistency</h3>
-                            <span class="text-xl font-semibold">95%</span>
-                        </div>
-                        <div class="w-full h-[60px] rounded-lg flex items-end">
-                            <svg class="w-full h-full" viewBox="0 0 100 20" preserveAspectRatio="none">
-                                <path d="M0 5 L10 4 L20 3 L30 5 L40 4 L50 3 L60 5 L70 4 L80 3 L90 4 L100 5" 
-                                      fill="none" 
-                                      stroke="#FACC15" 
-                                      stroke-width="1"/>
-                            </svg>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Response Relevancy -->
-                <div class="card bg-base-100 shadow-sm">
-                    <div class="card-body p-4">
-                        <div class="flex justify-between items-start mb-2">
-                            <h3 class="card-title text-sm font-medium">Response Quality</h3>
-                            <span class="text-xl font-semibold">91%</span>
-                        </div>
-                        <div class="w-full h-[60px] rounded-lg flex items-end">
-                            <svg class="w-full h-full" viewBox="0 0 100 20" preserveAspectRatio="none">
-                                <path d="M0 10 L10 8 L20 11 L30 9 L40 10 L50 8 L60 11 L70 9 L80 10 L90 8 L100 9" 
-                                      fill="none" 
-                                      stroke="#FACC15" 
-                                      stroke-width="1"/>
-                            </svg>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </main>
+        </div>
     </div>
 </body>
 </html> 

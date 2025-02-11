@@ -126,7 +126,7 @@
                   class="w-full flex items-center justify-between px-3 py-1.5 text-xs font-semibold text-base-content/50 uppercase tracking-wider hover:bg-base-300 rounded-lg"
                   @click="currentSection = 'settings'"
                 >
-                  <span>Agent</span>
+                  <span>Agent settings</span>
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
                   </svg>
@@ -135,7 +135,7 @@
             </div>
 
             <!-- Navigation takes remaining space -->
-            <nav class="flex-1 p-2">
+            <div class="flex-1 p-2">
               <!-- Workspace navigation -->
               <div class="px-2 mb-2">
                 <button 
@@ -231,7 +231,45 @@
                   </template>
                 </ul>
               </div>
-            </nav>
+
+              <!-- Border separator -->
+              <div class="px-4 border-b border-base-300"></div>
+
+              <!-- Data Sources Section -->
+              <div class="px-2 mt-6">
+                <div class="px-2">
+                  <div class="relative">
+
+                    <!-- Notion-style toast notification -->
+                    <div class="absolute left-0 -bottom-32 w-full">
+                      <div class="bg-gradient-to-r from-primary/30 to-secondary/30 rounded-lg shadow-lg p-3 border border-base-300">
+                        <!-- Icons row -->
+                        <div class="flex justify-center gap-2 mb-2">
+                          <div class="w-8 h-8 bg-neutral/10 rounded-full flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-neutral" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                              <path stroke-linecap="round" stroke-linejoin="round" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4" />
+                            </svg>
+                          </div>
+                          <div class="w-8 h-8 bg-secondary/10 rounded-full flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-secondary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                              <path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                            </svg>
+                          </div>
+                          <div class="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                              <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 16.875h3.375m0 0h3.375m-3.375 0V13.5m0 3.375v3.375M6 10.5h2.25a2.25 2.25 0 002.25-2.25V6a2.25 2.25 0 00-2.25-2.25H6A2.25 2.25 0 003.75 6v2.25A2.25 2.25 0 006 10.5zm0 9.75h2.25A2.25 2.25 0 0010.5 18v-2.25a2.25 2.25 0 00-2.25-2.25H6a2.25 2.25 0 00-2.25 2.25V18A2.25 2.25 0 006 20.25zm9.75-9.75H18a2.25 2.25 0 002.25-2.25V6A2.25 2.25 0 0018 3.75h-2.25A2.25 2.25 0 0013.5 6v2.25a2.25 2.25 0 002.25 2.25z" />
+                            </svg>
+                          </div>
+                        </div>
+                        <p class="text-sm text-center font-semibold text-base-content/90">
+                          Connect your existing data sources to enhance your knowledge base
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </aside>
 
           <!-- Content and chat area -->

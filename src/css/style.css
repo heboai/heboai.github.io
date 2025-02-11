@@ -55,6 +55,24 @@
   .drawer-side > aside.collapsed {
     width: var(--sidebar-collapsed-width) !important;
   }
+
+  /* Test case card specific styles */
+  .card.bg-base-200 {
+    @apply mb-1;
+  }
+
+  .card.bg-base-200 .card-body {
+    @apply min-h-0;
+  }
+
+  .card.bg-base-200 .badge {
+    @apply px-1.5 py-0.5 h-auto min-h-0;
+  }
+
+  /* Compact buttons */
+  .btn-xs.btn-ghost {
+    @apply h-6 min-h-0 px-1;
+  }
 }
 
 /* Typography utilities */
